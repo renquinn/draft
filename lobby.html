@@ -1,0 +1,153 @@
+<html>
+
+<head>
+	<link rel="stylesheet" type="text/css" href="style.css" />
+	{{if .Pause}}
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.0/jquery.min.js"></script>
+	<script type="text/javascript">
+			var auto_refresh = setInterval (
+			function () {
+				$('#timer').load('timer #time');
+			}, 1000);
+	</script>`
+	{{end}}
+</head>
+
+<body>
+	<div id="heading">
+	<center>
+	<img src="/images/title.png" />
+
+	<div id="menubar">
+		<ul>
+			<li><a href="/lobby">Lobby</a></li>
+			<li><a href="/draft">Draft Board</a></li>
+			<li><a href="/admin">Admin</a></li>
+			<li><a href="/logout">Logout</a></li>
+		</ul>
+		<ul style="margin:-5% 25%;">
+			<li><a href="/news">News</a></li>
+			<li><a href="/research">Research</a></li>
+		</ul>
+	</div>
+	<div id="timer">00:00:00</div>
+	</center>
+	</div>
+
+	<div class="box" id="makepick">
+			<br />
+		<form action="/picked" method="POST">
+			<center>
+			<select name="qb">
+				<option value="nil">QB</option>
+				{{range $q := .Rosters.QB}}
+				<option value="{{$q.PlayerID}}">{{$q.Name}} {{$q.Team}}</option>
+				{{end}}
+			</select>
+			<select name="rb">
+				<option value="nil">RB</option>
+				{{range $q := .Rosters.RB}}
+				<option value="{{$q.PlayerID}}">{{$q.Name}} {{$q.Team}}</option>
+				{{end}}
+			</select>
+			<select name="wr">
+				<option value="nil">WR</option>
+				{{range $q := .Rosters.WR}}
+				<option value="{{$q.PlayerID}}">{{$q.Name}} {{$q.Team}}</option>
+				{{end}}
+			</select>
+			<select name="te">
+				<option value="nil">TE</option>
+				{{range $q := .Rosters.TE}}
+				<option value="{{$q.PlayerID}}">{{$q.Name}} {{$q.Team}}</option>
+				{{end}}
+			</select>
+			<select name="k">
+				<option value="nil">K</option>
+				{{range $q := .Rosters.K}}
+				<option value="{{$q.PlayerID}}">{{$q.Name}} {{$q.Team}}</option>
+				{{end}}
+			</select>
+			<select name="def">
+				<option value="nil">DEF</option>
+				{{range $q := .Rosters.DEF}}
+				<option value="{{$q.PlayerID}}">{{$q.Name}} {{$q.Team}}</option>
+				{{end}}
+			</select>
+			<br />
+			<br />
+			<input class="button" type="submit" value="Make Pick!">
+			</center>
+		</form>
+		<!--<script type="text/javascript" src="http://api.fantasyfootballnerd.com/ffnRankingsJS.php?apiKey=2012050338875903"></script>-->
+	</div>
+
+	<div class="tabs">
+
+		{{range $t := .League}}
+		<div class="tab">
+<!--$t.Name = .Team`-->
+			<input type="radio" id="{{$t.TabID}}" name="tab-group-1" >
+			<label for="{{$t.TabID}}">{{$t.Name}}</label>
+
+			<div class="content">
+				<table cellspacing="20">
+					<tr>
+					{{range $p := $t.QB}}
+						<td>QB: {{$p.Name}} {{$p.Team}}</td>
+					{{end}}
+					</tr>
+					<tr>
+					{{range $p := $t.RB}}
+						<td>RB: {{$p.Name}} {{$p.Team}}</td>
+					{{end}}
+					</tr>
+					<tr>
+					{{range $p := $t.WR}}
+						<td>WR: {{$p.Name}} {{$p.Team}}</td>
+					{{end}}
+					</tr>
+					<tr>
+					{{range $p := $t.TE}}
+						<td>TE: {{$p.Name}} {{$p.Team}}</td>
+					{{end}}
+					</tr>
+					<tr>
+					{{range $p := $t.K}}
+						<td>K: {{$p.Name}} {{$p.Team}}</td>
+					{{end}}
+					</tr>
+					<tr>
+					{{range $p := $t.DEF}}
+						<td>DEF: {{$p.Name}} {{$p.Team}}</td>
+					{{end}}
+					</tr>
+				</table>
+			</div>
+		</div>
+		{{end}}
+
+
+	</div>
+
+	<div class="box" id="currentteam">
+		 <h1>{{.Team |html}}</h1>
+		<ol>
+			{{range $p := .Picks}}
+				<li>{{$p.Position}} {{$p.Name}} {{$p.Team}}</li>
+			{{end}}
+		</ol>
+	</div>
+
+	<div class="box" id="recentpicks">
+		<h1>League</h1>
+		<ul>
+			{{range $a := .AllPicks}}
+				<li>{{$a.Name}} {{$a.Team}}</li>
+			{{end}}
+		</ul>
+	</div>
+
+</body>
+
+</html>

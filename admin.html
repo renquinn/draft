@@ -1,0 +1,145 @@
+<html>
+
+<head>
+	<link rel="stylesheet" type="text/css" href="style.css" />
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.0/jquery.min.js"></script>
+	<script type="text/javascript">
+			var auto_refresh = setInterval (
+			function () {
+				$('#timer').load('timer #time');
+			}, 1000);
+	</script>`
+</head>
+
+<body>
+	<div id="heading">
+	<center>
+	<img src="/images/title.png" />
+	<div id="menubar">
+		<ul>
+			<li><a href="/lobby">Lobby</a></li>
+			<li><a href="/draft">Draft Board</a></li>
+			<li><a href="/admin">Admin</a></li>
+			<li><a href="/logout">Logout</a></li>
+		</ul>
+		<ul style="margin:-5% 25%;">
+			<li><a href="/news">News</a></li>
+			<li><a href="/research">Research</a></li>
+		</ul>
+	</div>
+	<div id="timer">00:00:00</div>
+	</center>
+	</div>
+
+<div class="box" id="admin">
+	<form action="/setadmin" method="POST">
+	<table border="0" cellpadding="20" align="center">
+		<tr>
+		
+		<td>
+			<input type="radio" name="admin" value="start" /><b>Begin Draft</b>
+			<p>Starts the draft timer.</p>
+		</td>
+
+		<td rowspan="2">
+			<input type="radio" name="admin" value="override" /><b>Override Draft Pick</b>
+			<p>Change a previously made pick.</p>
+			<table>
+				<tr>
+					<td></td>
+					<td>Team</td>
+					<td>
+						<select name="team">
+							<option value="dixie">Dixie</option>
+							<option value="b_ez_on">B EZ ON MY SNAX</option>
+							<option value="up_n_at">Up N Atoms</option>
+							<option value="i_am_ba">I Am Batman</option>
+							<option value="rob_do">Rob Dogo</option>
+							<option value="bhers">BHers</option>
+							<option value="el_gor">El Gordo</option>
+							<option value="nativ">Native Americans</option>
+							<option value="p_town">P-Town</option>
+							<option value="hit_sq">Hit Squad</option>
+							<option value="impac">Impact</option>
+							<option value="ukrai">Ukraine</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td></td>
+					<td>Round</td>
+					<td>
+						<select name="round">
+							<option value="1">1</option>
+							<option value="2">2</option>
+							<option value="3">3</option>
+							<option value="4">4</option>
+							<option value="5">5</option>
+							<option value="6">6</option>
+							<option value="7">7</option>
+							<option value="8">8</option>
+							<option value="9">9</option>
+							<option value="10">10</option>
+							<option value="11">11</option>
+							<option value="12">12</option>
+							<option value="13">13</option>
+							<option value="14">14</option>
+							<option value="15">15</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td></td>
+					<td>Player Name</td>
+					<td>
+					<select name="player">
+						{{range $q := .ALL}}
+						<option value="{{$q.PlayerID}}">{{$q.Position}} {{$q.Name}} {{$q.Team}}</option>
+						{{end}}
+					</select>
+					</td>
+						
+				</tr>
+			</table>
+		</td>
+		<td>
+			<input type="radio" name="admin" value="sync" /><b>Sync Rosters</b>
+			<p>Loads the rosters from the server.</p>
+		</td>
+		</tr>
+
+		<tr>
+		<td>
+			<input type="radio" name="admin" value="stop" /><b>Stop Draft</b>
+			<p>Stops the draft timer.</p>
+		</td>
+		<td>
+			<input type="radio" name="admin" value="rosters" /><b>Update Rosters</b>
+			<p>Downloads the rosters from FantasyFootballNerd. Unless necessary use Sync Rosters instead.</p>
+		</td>
+		</tr>
+
+		<tr>
+		<td>
+			<input type="radio" name="admin" value="reset" /><b>Reset Draft</b>
+			<p>Clears all draft info.</p>
+		</td>
+		<td>
+		<center><input class="button" type="submit" value="Submit"></center>
+		</td>
+		<td>
+			<input type="radio" name="admin" value="clear" /><b>Clear Rosters</b>
+			<p>Delete rosters from the server.</p>
+		</td>
+		</tr>
+
+		</table>
+	</form>
+</div>
+
+
+</body>
+
+</html>
+
+

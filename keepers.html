@@ -1,0 +1,132 @@
+<html>
+
+<head>
+	<link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+
+<body>
+	<center><img src="/images/title.png" /></center>
+	<div id="menubar">
+		<ul>
+			<li><a href="/lobby">Lobby</a></li>
+			<li><a href="/draft">Draft Board</a></li>
+			<li><a href="/admin">Admin</a></li>
+			<li><a href="/logout">Logout</a></li>
+		</ul>
+	</div>
+
+
+<div id="admin">
+<h2>{{.Team |html}}</h2>
+
+
+	<form action="/keepme" method="POST">
+		<select name="num">
+			<option value="1">1</option>
+			<option value="2">2</option>
+			<option value="3">3</option>
+		</select>
+		<b>Keeper(s)</b>
+		<br />
+		<br />
+			<table>
+				<tr>
+					<td>
+					<select name="player1">
+						<option value="nil">Keeper 1</option>
+						{{range $q := .Rosters.AllPlayers.ALL}}
+						<option value="{{$q.PlayerID}}">{{$q.Name}}, {{$q.Team}}</option>
+						{{end}}
+					</select>
+					</td>
+					<td>
+						<select name="round1">
+							<option value="">Round</option>
+							<option value="1">1</option>
+							<option value="2">2</option>
+							<option value="3">3</option>
+							<option value="4">4</option>
+							<option value="5">5</option>
+							<option value="6">6</option>
+							<option value="7">7</option>
+							<option value="8">8</option>
+							<option value="9">9</option>
+							<option value="10">10</option>
+							<option value="11">11</option>
+							<option value="12">12</option>
+							<option value="13">13</option>
+							<option value="14">14</option>
+							<option value="15">15</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td>
+					<select name="player2">
+						<option value="nil">Keeper 2</option>
+						{{range $q := .Rosters.AllPlayers.ALL}}
+						<option value="{{$q.PlayerID}}">{{$q.Name}}, {{$q.Team}}</option>
+						{{end}}
+					</select>
+					</td>
+					<td>
+						<select name="round2">
+							<option value="">Round</option>
+							<option value="1">1</option>
+							<option value="2">2</option>
+							<option value="3">3</option>
+							<option value="4">4</option>
+							<option value="5">5</option>
+							<option value="6">6</option>
+							<option value="7">7</option>
+							<option value="8">8</option>
+							<option value="9">9</option>
+							<option value="10">10</option>
+							<option value="11">11</option>
+							<option value="12">12</option>
+							<option value="13">13</option>
+							<option value="14">14</option>
+							<option value="15">15</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td>
+					<select name="player3">
+						<option value="nil">Keeper 3</option>
+						{{range $q := .Rosters.AllPlayers.ALL}}
+						<option value="{{$q.PlayerID}}">{{$q.Name}}, {{$q.Team}}</option>
+						{{end}}
+					</select>
+					</td>
+					<td>
+						<select name="round3">
+							<option value="">Round</option>
+							<option value="1">1</option>
+							<option value="2">2</option>
+							<option value="3">3</option>
+							<option value="4">4</option>
+							<option value="5">5</option>
+							<option value="6">6</option>
+							<option value="7">7</option>
+							<option value="8">8</option>
+							<option value="9">9</option>
+							<option value="10">10</option>
+							<option value="11">11</option>
+							<option value="12">12</option>
+							<option value="13">13</option>
+							<option value="14">14</option>
+							<option value="15">15</option>
+						</select>
+					</td>
+				</tr>
+			</table>
+			<input type="submit" value="Submit">
+	</form>
+</div>
+
+
+</body>
+
+</html>
+

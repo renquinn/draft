@@ -1,0 +1,73 @@
+<html>
+
+<head>
+	<link rel="stylesheet" type="text/css" href="style.css" />
+	<!--
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.0/jquery.min.js"></script>
+	<script type="text/javascript">
+			var auto_refresh = setInterval (
+			function () {
+				$('#timer').load('timer #time');
+			}, 1000);
+	</script>`
+	-->
+</head>
+
+<body>
+	<div id="heading">
+	<center>
+	<img src="/images/title.png" />
+
+	<div id="menubar">
+		<ul>
+			<li><a href="/lobby">Lobby</a></li>
+			<li><a href="/draft">Draft Board</a></li>
+			<li><a href="/admin">Admin</a></li>
+			<li><a href="/logout">Logout</a></li>
+		</ul>
+		<ul style="margin:-5% 25%;">
+			<li><a href="/news">News</a></li>
+			<li><a href="/research">Research</a></li>
+		</ul>
+	</div>
+	<div id="timer">00:00:00</div>
+	</center>
+	</div>
+
+	<div class="box" id="makepick">
+		<center>
+		<span style="color:yellow;font-size:30px;">UNDER CONSTRUCTION</span>
+		<form action="/research" method="POST">
+			<br />
+			Enter player ID
+			<input type="text" name="player" />
+			<br />
+			<p style="font-size:12px;">
+				Hint: The player ID is found by visiting that player's page on
+				<a href="http://espn.go.com/nfl">ESPN</a>
+				and looking for a 4 or 5-digit number in the URL.
+			</p>
+			<p style="font-size:12px;">Hope: In the future you will only have to type in the player's name (I'm waiting on ESPN's cooperation with this).</p>
+			<br />
+			<input class="button" type="submit" value="Search">
+		</form>
+		</center>
+	</div>
+
+	{{if .}}
+	{{range $c := .Categories}}
+	{{if $c.Athlete.Description}}
+	<div class="box" id="makepick">
+		<a href="http://espn.go.com"><img style="display:inline;float:right;" src="images/espn_gray.png" /></a>
+		<a href="{{$c.Athlete.Links.Web.Athletes.Href}}" style="text-decoration:none;color:#f5d70c;"><h2>{{$c.Athlete.Description}}</h2></a>
+	</div>
+	{{end}}
+	{{end}}
+	{{end}}
+
+
+</body>
+
+</html>
+
+

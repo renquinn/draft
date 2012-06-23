@@ -1,0 +1,36 @@
+body{
+	background-color:#1e4b12;
+}
+
+#body{
+	margin:auto;
+	padding:300px 100px 100px 300px;
+	width:700px;
+	height:300px;
+	background-image:url('images/test3.jpg');
+	background-size:100% 100%;
+	font-family: "Comic Sans MS";
+	font-family: "medium";
+	font-size:13px;
+}
+
+form {
+	margin:200px 0px 0px 175px;
+	/*
+	left:600px;
+	top:465px;
+	left:675px;
+	top:520px;
+	*/
+}
+
+@font-face {
+	font-family: "medium";
+	src: url("fonts/medium.ttf");
+}
+
+@font-face {
+	font-family: "light-cond";
+	src: url("fonts/light-cond.ttf");
+}
+

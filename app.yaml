@@ -1,0 +1,26 @@
+application: stg-football
+version: 2
+runtime: go
+api_version: go1
+
+handlers:
+- url: /style\.css
+  static_files: style.css
+  upload: style\.css
+
+- url: /index\.css
+  static_files: index.css
+  upload: index\.css
+
+- url: /images
+  static_dir: images
+
+- url: /fonts
+  static_dir: fonts
+  mime_type: application/octet-stream
+
+- url: /tablecloth
+  static_dir: tablecloth
+
+- url: /.*
+  script: _go_app

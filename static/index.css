@@ -1,0 +1,11 @@
+body{
+	background-image:url('images/test3.jpg');
+	background-size:100% 100%;
+	font-family: "Comic Sans MS";
+}
+
+form {
+	position:absolute;
+	left:675px;
+	top:520px;
+}
