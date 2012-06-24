@@ -148,7 +148,8 @@ type Players struct {
  */
 
 type Head struct {
-	title string
+	Title string
+	Pause bool
 }
 
 /*
@@ -795,28 +796,26 @@ page += `
 	page += `
 </head>
 <body>
-	<div id="heading">
-		<center>
-			<img src="/images/title.png" />
-			<div id="menubar">
-				<ul>
-					<li><a href="/lobby">Lobby</a></li>
-					<li><a href="/draft">Draft Board</a></li>
-					<li><a href="/admin">Admin</a></li>
-					<li><a href="/logout">Logout</a></li>
-				</ul>
-				<ul style="margin:-5% 25%;">
-					<li><a href="/news">News</a></li>
-					<li><a href="/research">Research</a></li>
-				</ul>
-			</div>
+	<div class="navbar">
+		<div class="navbar-inner">
+			<a href="/" class="brand">
+				<img src="/images/title.png" />
+			</a>
 			<div id="timer">
 `
 	page += getTime()
 	page +=
 `
 			</div>
-		</center>
+			<ul class="nav">
+				<li><a href="/lobby">Lobby</a></li>
+				<li><a href="/draft">Draft Board</a></li>
+				<li><a href="/admin">Admin</a></li>
+				<li><a href="/news">News</a></li>
+				<li><a href="/research">Research</a></li>
+				<li><a href="/logout">Logout</a></li>
+			</ul>
+		</div>
 	</div>
 	<table class="draft" table-layout="fixed">
 `

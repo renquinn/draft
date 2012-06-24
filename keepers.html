@@ -1,20 +1,11 @@
 <html>
 
 <head>
-	<link rel="stylesheet" type="text/css" href="style.css" />
+	{{template "head.html"}}
 </head>
 
 <body>
-	<center><img src="/images/title.png" /></center>
-	<div id="menubar">
-		<ul>
-			<li><a href="/lobby">Lobby</a></li>
-			<li><a href="/draft">Draft Board</a></li>
-			<li><a href="/admin">Admin</a></li>
-			<li><a href="/logout">Logout</a></li>
-		</ul>
-	</div>
-
+	{{template "navbar.html"}}
 
 <div id="admin">
 <h2>{{.Team |html}}</h2>
@@ -34,7 +25,7 @@
 					<td>
 					<select name="player1">
 						<option value="nil">Keeper 1</option>
-						{{range $q := .Rosters.AllPlayers.ALL}}
+						{{range $q := .Rosters.All }}
 						<option value="{{$q.PlayerID}}">{{$q.Name}}, {{$q.Team}}</option>
 						{{end}}
 					</select>
@@ -64,7 +55,7 @@
 					<td>
 					<select name="player2">
 						<option value="nil">Keeper 2</option>
-						{{range $q := .Rosters.AllPlayers.ALL}}
+						{{range $q := .Rosters.ALL}}
 						<option value="{{$q.PlayerID}}">{{$q.Name}}, {{$q.Team}}</option>
 						{{end}}
 					</select>
@@ -94,7 +85,7 @@
 					<td>
 					<select name="player3">
 						<option value="nil">Keeper 3</option>
-						{{range $q := .Rosters.AllPlayers.ALL}}
+						{{range $q := .Rosters.ALL}}
 						<option value="{{$q.PlayerID}}">{{$q.Name}}, {{$q.Team}}</option>
 						{{end}}
 					</select>
