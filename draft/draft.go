@@ -25,6 +25,8 @@ import (
 // The list of templates to use
 var TEMPLATES = template.Must(template.ParseFiles(
 				"index.html",
+				"head.html",
+				"navbar.html",
 				"lobby.html",
 				"keepers.html",
 				"admin.html",
@@ -139,6 +141,14 @@ type Players struct {
 	K map[string]Player
 	DEF map[string]Player
 	ALL map[string]Player
+}
+
+/*
+ * Template Structs
+ */
+
+type Head struct {
+	title string
 }
 
 /*
