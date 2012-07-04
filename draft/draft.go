@@ -777,22 +777,6 @@ func draft(w http.ResponseWriter, r *http.Request) {
 </script>
 `
 	}
-page += `
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.0/jquery.min.js"></script>
-<script type="text/javascript">
-	$(document).ready(function() {
-		sidebarScrollTop = $('#firstRow').offset();
-		$(window).scroll(function() {
-			var docScrollTop = $('body').scrollTop();
-			if(docScrollTop >= sidebarScrollTop.top + 140) {
-				$("#firstRow").css({visibility: 'visible', position: 'fixed', top: '0px'});
-			} else {
-				$("#firstRow").css({visibility: 'hidden', position: 'static'});
-			}
-		});
-	});
-</script>
-`
 	page += `
 </head>
 <body>
@@ -819,20 +803,6 @@ page += `
 	</div>
 	<table class="draft" table-layout="fixed">
 `
-	page += `		<tr id="firstRow">
-`
-	for i:=0;i<=NUMTEAMS;i++ {
-		if i==0 {
-			page += "			<th>"
-			page += strconv.Itoa(NUMROUNDS)
-			page += "</th>\n"
-		} else {
-			page += "			<th>"
-			page += teamTeam[rlookup(teamNumber,i)] //Team name headers
-			page += "</th>\n"
-		}
-	}
-	page += "		</tr>\n"
 	page += `		<tr>\n`
 	for i:=0;i<=NUMTEAMS;i++ {
 		if i==0 {
