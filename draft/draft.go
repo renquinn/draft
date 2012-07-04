@@ -110,18 +110,27 @@ var teamTeam = map[string] string {
 // ===============================
 // Structs
 // ===============================
-type User struct {
-	Name string
-	Team string
-	Number int
-	Picks [15]Player
+type Page struct {
+	User User
 	AllPicks []Player
 	Rosters Players
 	League []Team
-	Pause bool
+}
+
+type User struct {
+	Name string
+	Username string
+	Team string
+	Number int
+	Picks [15]Player
+}
+
+func (u *User) Key(c appengine.Context) *datastore.Key {
+	return datastore.NewKey(c, "User", u.Username, 0, nil)
 }
 
 type Team struct {
+	User string
 	Name string
 	Number int
 	TabID string
@@ -213,6 +222,29 @@ type Athletes struct {
 // ===============================
 // Helpers 
 // ===============================
+
+// Returns a User struct from the datastore
+func getUser(c appengine.Context, username string) (*User, error) {
+	u := &User{Username: username}
+	err := datastore.Get(c,u.Key(c), u)
+	if err == datastore.ErrNoSuchEntity {
+		_, err = datastore.Put(c, u.Key(c), u)
+	}
+	return u, err
+}
+
+// Returns all the Users in the draft
+func getUsers(c appengine.Context) ([]User, error) {
+	k := make([]*datastore.Key,0)
+	u := new(User)
+	for i:=1;i<=12;i++ {
+		u.Username = rlookup(teamNumber,i)
+		k = append(k,u.Key(c))
+	}
+	users := make([]User, len(k))
+	err := datastore.GetMulti(c,k,users)
+	return users, err
+}
 
 // Returns a timer formatted in scoreboard style
 func getTime() string {
@@ -560,8 +592,9 @@ func lobby(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Create User using cookie username to lookup Name and Team
-	u := &User{Name: teamName[cookie.Value], Team: teamTeam[cookie.Value], Picks: p, AllPicks: ALLPICKS, Rosters: PLAYERS, League: TEAMS, Pause:!PAUSE}
-	errT := TEMPLATES.ExecuteTemplate(w,"lobby.html",u)
+	u := User{Name: teamName[cookie.Value], Team: teamTeam[cookie.Value], Picks: p}
+	page := &Page{League: TEAMS, User: u, Rosters: PLAYERS, AllPicks: ALLPICKS}
+	errT := TEMPLATES.ExecuteTemplate(w,"lobby.html",page)
 	if errT != nil {
 		http.Error(w, errT.Error(), http.StatusInternalServerError)
 	}
@@ -600,8 +633,9 @@ func keepers(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Create User using cookie username to lookup Name and Team
-	u := &User{Name: teamName[cookie.Value], Team: teamTeam[cookie.Value], Rosters: PLAYERS}
-	errT := TEMPLATES.ExecuteTemplate(w,"keepers.html",u)
+	u := User{Name: teamName[cookie.Value], Team: teamTeam[cookie.Value]}
+	page := Page{User: u, Rosters: PLAYERS}
+	errT := TEMPLATES.ExecuteTemplate(w,"keepers.html",page)
 	fmt.Println(errT)
 	if errT != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

@@ -104,9 +104,9 @@
 	</div>
 
 	<div class="box" id="currentteam">
-		 <h1>{{.Team |html}}</h1>
+		 <h1>{{.User.Team |html}}</h1>
 		<ol>
-			{{range $p := .Picks}}
+			{{range $p := .User.Picks}}
 				<li>{{$p.Position}} {{$p.Name}} {{$p.Team}}</li>
 			{{end}}
 		</ol>
