@@ -19,8 +19,9 @@ handlers:
   static_dir: fonts
   mime_type: application/octet-stream
 
-- url: /tablecloth
-  static_dir: tablecloth
+- url: /javascripts/
+  static_dir: javascripts
+  mime_type: application/javascript
 
 - url: /.*
   script: _go_app
