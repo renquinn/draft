@@ -27,6 +27,7 @@ var TEMPLATES = template.Must(template.ParseFiles(
 				"index.html",
 				"head.html",
 				"navbar.html",
+				"footer.html",
 				"lobby.html",
 				"keepers.html",
 				"admin.html",
@@ -115,6 +116,7 @@ type Page struct {
 	AllPicks []Player
 	Rosters Players
 	League []Team
+	Pause string
 }
 
 type User struct {
@@ -593,7 +595,11 @@ func lobby(w http.ResponseWriter, r *http.Request) {
 
 	// Create User using cookie username to lookup Name and Team
 	u := User{Name: teamName[cookie.Value], Team: teamTeam[cookie.Value], Picks: p}
-	page := &Page{League: TEAMS, User: u, Rosters: PLAYERS, AllPicks: ALLPICKS}
+	pause := ""
+	if !PAUSE {
+		pause = "pause"
+	}
+	page := &Page{League: TEAMS, User: u, Rosters: PLAYERS, AllPicks: ALLPICKS, Pause: pause}
 	errT := TEMPLATES.ExecuteTemplate(w,"lobby.html",page)
 	if errT != nil {
 		http.Error(w, errT.Error(), http.StatusInternalServerError)
@@ -780,13 +786,7 @@ func picked(w http.ResponseWriter, r *http.Request) {
 // Timer page
 // Displays a timer to be retrieved through javascript by other pages
 func timer(w http.ResponseWriter, r *http.Request) {
-	page := `<html>
-<head>
-</head>
-<body>
-	<div id="time">`+getTime()+`</div>
-</body>
-</html>`
+	page := getTime()
 	fmt.Fprint(w, page)
 }
 
@@ -801,16 +801,6 @@ func draft(w http.ResponseWriter, r *http.Request) {
 <head>
 <link rel="stylesheet" type="text/css" href="style.css" />
 `
-	if !PAUSE {
-		page += `
-<script type="text/javascript">
-		var auto_refresh = setInterval (
-		function () {
-			$('#timer').load('timer #time');
-		}, 1000);
-</script>
-`
-	}
 	page += `
 </head>
 <body>
@@ -868,6 +858,13 @@ func draft(w http.ResponseWriter, r *http.Request) {
 	}
 	page += `
 </table>
+
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.0/jquery.min.js"></script>
+`
+if !PAUSE {
+	page += `<script type="text/javascript" src="javascripts/timer.js"></script>`
+}
+`
 </body>
 </html>`
 
