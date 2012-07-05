@@ -864,7 +864,7 @@ func draft(w http.ResponseWriter, r *http.Request) {
 if !PAUSE {
 	page += `<script type="text/javascript" src="javascripts/timer.js"></script>`
 }
-`
+page += `
 </body>
 </html>`
 
