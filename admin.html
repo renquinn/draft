@@ -1,7 +1,7 @@
 <html>
 
 <head>
-	{{template "head.html"}}
+	{{template "head.html" .Pause}}
 </head>
 
 <body>
@@ -69,7 +69,7 @@
 					<td>Player Name</td>
 					<td>
 					<select name="player">
-						{{range $q := .ALL}}
+						{{range $q := .Players.ALL}}
 						<option value="{{$q.PlayerID}}">{{$q.Position}} {{$q.Name}} {{$q.Team}}</option>
 						{{end}}
 					</select>

@@ -117,6 +117,7 @@ type Page struct {
 	Rosters Players
 	League []Team
 	Pause string
+	Players Players
 }
 
 type User struct {
@@ -801,6 +802,9 @@ func draft(w http.ResponseWriter, r *http.Request) {
 <head>
 <link rel="stylesheet" type="text/css" href="style.css" />
 `
+	if !PAUSE {
+		page += `<script type="text/javascript" src="javascripts/timer.js"></script>`
+	}
 	page += `
 </head>
 <body>
@@ -860,12 +864,6 @@ func draft(w http.ResponseWriter, r *http.Request) {
 </table>
 
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.0/jquery.min.js"></script>
-`
-if !PAUSE {
-	page += `<script type="text/javascript" src="javascripts/timer.js"></script>`
-}
-page += `
-</body>
 </html>`
 
 	fmt.Fprint(w, page)
@@ -889,7 +887,12 @@ func admin(w http.ResponseWriter, r *http.Request) {
 	}
 
 	PLAYERS.ALL = GetRosters()
-	errT := TEMPLATES.ExecuteTemplate(w,"admin.html",PLAYERS)
+	pause := ""
+	if !PAUSE {
+		pause = "pause"
+	}
+	page := Page{Pause: pause, Players: PLAYERS}
+	errT := TEMPLATES.ExecuteTemplate(w,"admin.html",page)
 	if errT != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
