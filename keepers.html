@@ -8,7 +8,7 @@
 	{{template "navbar.html"}}
 
 <div id="admin">
-<h2>{{.Team |html}}</h2>
+<h2>{{.User.Team |html}}</h2>
 
 
 	<form action="/keepme" method="POST">
@@ -25,7 +25,7 @@
 					<td>
 					<select name="player1">
 						<option value="nil">Keeper 1</option>
-						{{range $q := .Rosters.All }}
+						{{range $q := .Rosters.ALL }}
 						<option value="{{$q.PlayerID}}">{{$q.Name}}, {{$q.Team}}</option>
 						{{end}}
 					</select>
