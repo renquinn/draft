@@ -327,7 +327,32 @@ select {
 .draft tr.even td{background-color:rgba(255,255,255,1.0);}
 .draft tr.odd td{background-color:rgba(230,230,230,0.9);}
 
-.fixed {
-	position:fixed;
-	top:0px;
+#sortable {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	width: 50%;
+	height: 200px;
+	overflow-y: hidden;
+}
+
+#sortable li {
+	margin: 0 5px 5px;
+	padding: 5px;
+	font-size: 1.2em;
+	height: 1.5em;
+	line-height: 1.2em;
+}
+
+.ui-state-default {
+	border: 1px solid #000;
+}
+
+.ui-state-default:hover {
+	cursor: "crosshair";
+}
+
+.ui-state-highlight {
+	height: 1.5em;
+	line-height: 1.2em;
 }
