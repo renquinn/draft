@@ -7,23 +7,37 @@
 <body>
 	{{template "navbar.html"}}
 
-	<div class="box" id="makepick">
-		<ul id="sortable">
-			<li class="ui-state-default">1 Name Team</li>
-			<li class="ui-state-default">2 Name Team</li>
-			<li class="ui-state-default">3 Name Team</li>
-			<li class="ui-state-default">4 Name Team</li>
-			<li class="ui-state-default">5 Name Team</li>
-			<li class="ui-state-default">6 Name Team</li>
-			<li class="ui-state-default">7 Name Team</li>
-			<li class="ui-state-default">8 Name Team</li>
-			<li class="ui-state-default">9 Name Team</li>
-			<li class="ui-state-default">10 Name Team</li>
+	  <div id="tabs">
+	  	<ul>
+			<li><a href="#tabs-1">QBs</a></li>
+			<li><a href="#tabs-2">RBs</a></li>
+		</ul>
+		<div id="tabs-1">
+		<ul id="sortable" class="qbs">
+			<li class="player ui-state-default">1 Name Team</li>
+			<li class="player ui-state-default">2 Name Team</li>
+			<li class="player ui-state-default">3 Name Team</li>
+			<li class="player ui-state-default">4 Name Team</li>
+			<li class="player ui-state-default">5 Name Team</li>
 			{{range $q := .Rosters.QB}}
 			<li class="ui-state-default">{{$q.Name}} {{$q.Team}}</li>
 			{{end}}
 		</ul>
-	</div>
+		</div>
+		<div id="tabs-2">
+		<ul id="sortable" class="rbs">
+			<li class="player ui-state-default">1 Name Team</li>
+			<li class="player ui-state-default">2 Name Team</li>
+			<li class="player ui-state-default">3 Name Team</li>
+			<li class="player ui-state-default">4 Name Team</li>
+			<li class="player ui-state-default">5 Name Team</li>
+			{{range $q := .Rosters.QB}}
+			<li class="ui-state-default">{{$q.Name}} {{$q.Team}}</li>
+			{{end}}
+		</ul>
+		</div>
+	  </div>
+
 	<div class="box" id="makepick">
 			<br />
 		<form action="/picked" method="POST">
@@ -120,30 +134,14 @@
 
 	</div>
 
-	<div class="box" id="currentteam">
-		 <h1>{{.User.Team |html}}</h1>
-		<ol>
-			{{range $p := .User.Picks}}
-				<li>{{$p.Position}} {{$p.Name}} {{$p.Team}}</li>
-			{{end}}
-		</ol>
-	</div>
-
-	<div class="box" id="recentpicks">
-		<h1>League</h1>
-		<ul>
-			{{range $a := .AllPicks}}
-				<li>{{$a.Name}} {{$a.Team}}</li>
-			{{end}}
-		</ul>
-	</div>
-
 	{{template "footer.html"}}
 	<script type="text/javascript" src="javascripts/jquery.ui.core.min.js"></script>
 	<script type="text/javascript" src="javascripts/jquery.ui.widget.min.js"></script>
 	<script type="text/javascript" src="javascripts/jquery.ui.mouse.min.js"></script>
 	<script type="text/javascript" src="javascripts/jquery.ui.sortable.min.js"></script>
 	<script type="text/javascript" src="javascripts/sortable.js"></script>
+	<script type="text/javascript" src="javascripts/jquery.ui.tabs.min.js"></script>
+	<script type="text/javascript" src="javascripts/tabs.js"></script>
 </body>
 
 </html>

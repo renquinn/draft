@@ -5,6 +5,7 @@ body{
 	background-size: 120% 100%;
 	font-family: "medium";
 	padding-top: 80px;
+	overflow-x: hidden;
 }
 
 .navbar {
@@ -331,28 +332,35 @@ select {
 	list-style-type: none;
 	margin: 0;
 	padding: 0;
-	width: 50%;
+	width: 20%;
 	height: 200px;
-	overflow-y: hidden;
+	overflow-y: scroll;
+	border: 1px solid #000;
 }
 
 #sortable li {
-	margin: 0 5px 5px;
+	margin: 0;
 	padding: 5px;
+	color: #fff;
 	font-size: 1.2em;
 	height: 1.5em;
 	line-height: 1.2em;
 }
 
-.ui-state-default {
+.player {
 	border: 1px solid #000;
+	background: rgba(20,20,20,.5);
 }
 
-.ui-state-default:hover {
+.player:hover {
 	cursor: "crosshair";
 }
 
 .ui-state-highlight {
 	height: 1.5em;
 	line-height: 1.2em;
+}
+
+.ui-tabs-hide {
+	display: none;
 }

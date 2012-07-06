@@ -1,9 +1,9 @@
 $(function() {
-	$( "#sortable" ).sortable({
+	$( ".qbs, .rbs" ).sortable({
 		placeholder: "ui-state-highlight",
 		cursor: "pointer",
 		scroll: true,
 		scrollSensitivity: 30
 	});
-	$( "#sortable" ).disableSelection();
+	$( ".qbs, .rbs" ).disableSelection();
 });
