@@ -2,6 +2,8 @@
 
 <head>
 	{{template "head.html" .Pause}}
+	<link rel="stylesheet" type="text/css" href="stylesheets/sortable.css" />
+	<link rel="stylesheet" type="text/css" href="stylesheets/tabs.css" />
 </head>
 
 <body>
@@ -9,82 +11,221 @@
 
 	  <div id="tabs">
 	  	<ul>
-			<li><a href="#tabs-1">QBs</a></li>
-			<li><a href="#tabs-2">RBs</a></li>
+			<li><a href="#tabs-1">Top 200</a></li>
+			<li><a href="#tabs-2">QBs</a></li>
+			<li><a href="#tabs-3">RBs</a></li>
+			<li><a href="#tabs-4">WRs</a></li>
+			<li><a href="#tabs-5">TEs</a></li>
+			<li><a href="#tabs-6">Ks</a></li>
+			<li><a href="#tabs-7">DEFs</a></li>
 		</ul>
 		<div id="tabs-1">
-		<ul id="sortable" class="qbs">
-			<li class="player ui-state-default">1 Name Team</li>
-			<li class="player ui-state-default">2 Name Team</li>
-			<li class="player ui-state-default">3 Name Team</li>
-			<li class="player ui-state-default">4 Name Team</li>
-			<li class="player ui-state-default">5 Name Team</li>
-			{{range $q := .Rosters.QB}}
-			<li class="ui-state-default">{{$q.Name}} {{$q.Team}}</li>
-			{{end}}
-		</ul>
+			<table class="sortables">
+				<tr>
+					<td>
+						<h2>Top 200</h2>
+					</td>
+					<td>
+						<h2>{{.User.Team}}</h2>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<ul class="sortable" id="top200">
+							<li class="player ui-state-default">1 Name Team</li>
+							<li class="player ui-state-default">2 Name Team</li>
+							<li class="player ui-state-default">3 Name Team</li>
+							<li class="player ui-state-default">4 Name Team</li>
+							<li class="player ui-state-default">5 Name Team</li>
+							{{range $q := .Rosters.QB}}
+							<li class="ui-state-default">{{$q.Name}} {{$q.Team}}</li>
+							{{end}}
+						</ul>
+					</td>
+					<td>
+						<ul class="sortable">
+							{{range $q := .User.Picks}}
+							<li class="ui-state-default">{{$q.Name}} {{$q.Team}}</li>
+							{{end}}
+						</ul>
+					</td>
+				</tr>
+			</table>
 		</div>
 		<div id="tabs-2">
-		<ul id="sortable" class="rbs">
-			<li class="player ui-state-default">1 Name Team</li>
-			<li class="player ui-state-default">2 Name Team</li>
-			<li class="player ui-state-default">3 Name Team</li>
-			<li class="player ui-state-default">4 Name Team</li>
-			<li class="player ui-state-default">5 Name Team</li>
-			{{range $q := .Rosters.QB}}
-			<li class="ui-state-default">{{$q.Name}} {{$q.Team}}</li>
-			{{end}}
-		</ul>
+			<table class="sortables">
+				<tr>
+					<td>
+						<h2>QBs</h2>
+					</td>
+					<td>
+						<h2>{{.User.Team}}</h2>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<ul class="sortable" id="qbs">
+							<li class="player ui-state-default">1 Name Team</li>
+							<li class="player ui-state-default">2 Name Team</li>
+							<li class="player ui-state-default">3 Name Team</li>
+							<li class="player ui-state-default">4 Name Team</li>
+							<li class="player ui-state-default">5 Name Team</li>
+							{{range $q := .Rosters.QB}}
+							<li class="ui-state-default">{{$q.Name}} {{$q.Team}}</li>
+							{{end}}
+						</ul>
+					</td>
+					<td>
+						<ul class="sortable">
+							{{range $q := .User.Picks}}
+							<li class="ui-state-default">{{$q.Name}} {{$q.Team}}</li>
+							{{end}}
+						</ul>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div id="tabs-3">
+			<table class="sortables">
+				<tr>
+					<td>
+						<h2>RBs</h2>
+					</td>
+					<td>
+						<h2>{{.User.Team}}</h2>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<ul class="sortable" id="rbs">
+							{{range $q := .Rosters.RB}}
+							<li class="ui-state-default">{{$q.Name}} {{$q.Team}}</li>
+							{{end}}
+						</ul>
+					</td>
+					<td>
+						<ul class="sortable">
+							{{range $q := .User.Picks}}
+							<li class="ui-state-default">{{$q.Name}} {{$q.Team}}</li>
+							{{end}}
+						</ul>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div id="tabs-4">
+			<table class="sortables">
+				<tr>
+					<td>
+						<h2>WRs</h2>
+					</td>
+					<td>
+						<h2>{{.User.Team}}</h2>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<ul class="sortable" id="wrs">
+							{{range $q := .Rosters.WR}}
+							<li class="ui-state-default">{{$q.Name}} {{$q.Team}}</li>
+							{{end}}
+						</ul>
+					</td>
+					<td>
+						<ul class="sortable">
+							{{range $q := .User.Picks}}
+							<li class="ui-state-default">{{$q.Name}} {{$q.Team}}</li>
+							{{end}}
+						</ul>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div id="tabs-5">
+			<table class="sortables">
+				<tr>
+					<td>
+						<h2>TEs</h2>
+					</td>
+					<td>
+						<h2>{{.User.Team}}</h2>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<ul class="sortable" id="tes">
+							{{range $q := .Rosters.TE}}
+							<li class="ui-state-default">{{$q.Name}} {{$q.Team}}</li>
+							{{end}}
+						</ul>
+					</td>
+					<td>
+						<ul class="sortable">
+							{{range $q := .User.Picks}}
+							<li class="ui-state-default">{{$q.Name}} {{$q.Team}}</li>
+							{{end}}
+						</ul>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div id="tabs-6">
+			<table class="sortables">
+				<tr>
+					<td>
+						<h2>Ks</h2>
+					</td>
+					<td>
+						<h2>{{.User.Team}}</h2>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<ul class="sortable" id="ks">
+							{{range $q := .Rosters.K}}
+							<li class="ui-state-default">{{$q.Name}} {{$q.Team}}</li>
+							{{end}}
+						</ul>
+					</td>
+					<td>
+						<ul class="sortable">
+							{{range $q := .User.Picks}}
+							<li class="ui-state-default">{{$q.Name}} {{$q.Team}}</li>
+							{{end}}
+						</ul>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div id="tabs-7">
+			<table class="sortables">
+				<tr>
+					<td>
+						<h2>DEFS</h2>
+					</td>
+					<td>
+						<h2>{{.User.Team}}</h2>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<ul class="sortable" id="defs">
+							{{range $q := .Rosters.DEF}}
+							<li class="ui-state-default">{{$q.Name}} {{$q.Team}}</li>
+							{{end}}
+						</ul>
+					</td>
+					<td>
+						<ul class="sortable">
+							{{range $q := .User.Picks}}
+							<li class="ui-state-default">{{$q.Name}} {{$q.Team}}</li>
+							{{end}}
+						</ul>
+					</td>
+				</tr>
+			</table>
 		</div>
 	  </div>
-
-	<div class="box" id="makepick">
-			<br />
-		<form action="/picked" method="POST">
-			<center>
-			<select name="qb">
-				<option value="nil">QB</option>
-				{{range $q := .Rosters.QB}}
-				<option value="{{$q.PlayerID}}">{{$q.Name}} {{$q.Team}}</option>
-				{{end}}
-			</select>
-			<select name="rb">
-				<option value="nil">RB</option>
-				{{range $q := .Rosters.RB}}
-				<option value="{{$q.PlayerID}}">{{$q.Name}} {{$q.Team}}</option>
-				{{end}}
-			</select>
-			<select name="wr">
-				<option value="nil">WR</option>
-				{{range $q := .Rosters.WR}}
-				<option value="{{$q.PlayerID}}">{{$q.Name}} {{$q.Team}}</option>
-				{{end}}
-			</select>
-			<select name="te">
-				<option value="nil">TE</option>
-				{{range $q := .Rosters.TE}}
-				<option value="{{$q.PlayerID}}">{{$q.Name}} {{$q.Team}}</option>
-				{{end}}
-			</select>
-			<select name="k">
-				<option value="nil">K</option>
-				{{range $q := .Rosters.K}}
-				<option value="{{$q.PlayerID}}">{{$q.Name}} {{$q.Team}}</option>
-				{{end}}
-			</select>
-			<select name="def">
-				<option value="nil">DEF</option>
-				{{range $q := .Rosters.DEF}}
-				<option value="{{$q.PlayerID}}">{{$q.Name}} {{$q.Team}}</option>
-				{{end}}
-			</select>
-			<br />
-			<br />
-			<input class="button" type="submit" value="Make Pick!">
-			</center>
-		</form>
-		<!--<script type="text/javascript" src="http://api.fantasyfootballnerd.com/ffnRankingsJS.php?apiKey=2012050338875903"></script>-->
-	</div>
 
 	<div class="tabs">
 

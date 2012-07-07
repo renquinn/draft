@@ -1,5 +1,5 @@
 body{
-	background-image:url('images/bg.jpg');
+	background-image:url('../images/bg.jpg');
 	background-repeat: no-repeat;
 	background-attachment: fixed;
 	background-size: 120% 100%;
@@ -269,32 +269,32 @@ select {
 
 @font-face {
 	font-family: "bold";
-	src: url("fonts/bold.ttf");
+	src: url("../fonts/bold.ttf");
 }
 
 @font-face {
 	font-family: "light-cond";
-	src: url("fonts/light-cond.ttf");
+	src: url("../fonts/light-cond.ttf");
 }
 
 @font-face {
 	font-family: "medium-cond";
-	src: url("fonts/medium-cond.ttf");
+	src: url("../fonts/medium-cond.ttf");
 }
 
 @font-face {
 	font-family: "medium";
-	src: url("fonts/medium.ttf");
+	src: url("../fonts/medium.ttf");
 }
 
 @font-face {
 	font-family: "scoreboard";
-	src: url("fonts/scoreboard2.ttf");
+	src: url("../fonts/scoreboard2.ttf");
 }
 
 @font-face {
 	font-family: "digital";
-	src: url("fonts/digital.ttf");
+	src: url("../fonts/digital.ttf");
 }
 
 /*
@@ -328,39 +328,3 @@ select {
 .draft tr.even td{background-color:rgba(255,255,255,1.0);}
 .draft tr.odd td{background-color:rgba(230,230,230,0.9);}
 
-#sortable {
-	list-style-type: none;
-	margin: 0;
-	padding: 0;
-	width: 20%;
-	height: 200px;
-	overflow-y: scroll;
-	border: 1px solid #000;
-}
-
-#sortable li {
-	margin: 0;
-	padding: 5px;
-	color: #fff;
-	font-size: 1.2em;
-	height: 1.5em;
-	line-height: 1.2em;
-}
-
-.player {
-	border: 1px solid #000;
-	background: rgba(20,20,20,.5);
-}
-
-.player:hover {
-	cursor: "crosshair";
-}
-
-.ui-state-highlight {
-	height: 1.5em;
-	line-height: 1.2em;
-}
-
-.ui-tabs-hide {
-	display: none;
-}

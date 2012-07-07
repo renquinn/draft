@@ -800,7 +800,7 @@ func draft(w http.ResponseWriter, r *http.Request) {
 	page := `
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="style.css" />
+<link rel="stylesheet" type="text/css" href="stylesheets/style.css" />
 `
 	if !PAUSE {
 		page += `<script type="text/javascript" src="javascripts/timer.js"></script>`

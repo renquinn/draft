@@ -1,0 +1,33 @@
+.sortable {
+	position: relative;
+	list-style-type: none;
+	margin: 10px;
+	padding: 0;
+	width: 90%;
+	height: 400px;
+	border: 1px solid #000;
+	overflow-y: scroll;
+}
+
+.sortable li {
+	margin: 0;
+	padding: 5px;
+	color: #fff;
+	font-size: 1.2em;
+	height: 1.5em;
+	line-height: 1.2em;
+}
+
+.player {
+	border: 1px solid #000;
+	background: rgba(20,20,20,.5);
+}
+
+.player:hover {
+	cursor: "crosshair";
+}
+
+.ui-state-highlight {
+	height: 1.5em;
+	line-height: 1.2em;
+}

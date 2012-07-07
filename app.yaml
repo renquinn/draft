@@ -4,10 +4,6 @@ runtime: go
 api_version: go1
 
 handlers:
-- url: /style\.css
-  static_files: style.css
-  upload: style\.css
-
 - url: /index\.css
   static_files: index.css
   upload: index\.css
@@ -22,6 +18,9 @@ handlers:
 - url: /javascripts/
   static_dir: javascripts
   mime_type: application/javascript
+
+- url: /stylesheets/
+  static_dir: stylesheets
 
 - url: /.*
   script: _go_app
