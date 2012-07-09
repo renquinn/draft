@@ -9,9 +9,14 @@
 <body>
 	{{template "navbar.html"}}
 
+
+	<form action="/picked" method="POST">
+		<input id="input-player" type="text" name="player" style="display: none;" />
+		<input id="input-position" type="text" name="position" style="display: none;" />
+	</form>
 	  <div id="tabs">
 	  	<ul>
-			<li><a href="#tabs-1">Top 200</a></li>
+			<!--<li><a href="#tabs-1">Top 200</a></li>-->
 			<li><a href="#tabs-2">QBs</a></li>
 			<li><a href="#tabs-3">RBs</a></li>
 			<li><a href="#tabs-4">WRs</a></li>
@@ -19,6 +24,7 @@
 			<li><a href="#tabs-6">Ks</a></li>
 			<li><a href="#tabs-7">DEFs</a></li>
 		</ul>
+		<!--
 		<div id="tabs-1">
 			<table class="sortables">
 				<tr>
@@ -32,26 +38,26 @@
 				<tr>
 					<td>
 						<ul class="sortable" id="top200">
-							<li class="player ui-state-default">1 Name Team</li>
-							<li class="player ui-state-default">2 Name Team</li>
-							<li class="player ui-state-default">3 Name Team</li>
-							<li class="player ui-state-default">4 Name Team</li>
-							<li class="player ui-state-default">5 Name Team</li>
 							{{range $q := .Rosters.QB}}
-							<li class="ui-state-default">{{$q.Name}} {{$q.Team}}</li>
+							<li class="player ui-state-default">
+								<span id="pid">{{$q.PlayerID}}</span>
+								<span id="pname">{{$q.Name}}</span>
+								<span id="pteam">{{$q.Team}}</span>
+							</li>
 							{{end}}
 						</ul>
 					</td>
 					<td>
-						<ul class="sortable">
+						<ul class="sortable" id="myteam1">
 							{{range $q := .User.Picks}}
-							<li class="ui-state-default">{{$q.Name}} {{$q.Team}}</li>
+							<li class="player ui-state-default">{{$q.Name}} {{$q.Team}}</li>
 							{{end}}
 						</ul>
 					</td>
 				</tr>
 			</table>
 		</div>
+		-->
 		<div id="tabs-2">
 			<table class="sortables">
 				<tr>
@@ -65,20 +71,19 @@
 				<tr>
 					<td>
 						<ul class="sortable" id="qbs">
-							<li class="player ui-state-default">1 Name Team</li>
-							<li class="player ui-state-default">2 Name Team</li>
-							<li class="player ui-state-default">3 Name Team</li>
-							<li class="player ui-state-default">4 Name Team</li>
-							<li class="player ui-state-default">5 Name Team</li>
 							{{range $q := .Rosters.QB}}
-							<li class="ui-state-default">{{$q.Name}} {{$q.Team}}</li>
+							<li class="player ui-state-default">
+								<span id="pid">{{$q.PlayerID}}</span>
+								<span id="pname">{{$q.Name}}</span>
+								<span id="pteam">{{$q.Team}}</span>
+							</li>
 							{{end}}
 						</ul>
 					</td>
 					<td>
-						<ul class="sortable">
+						<ul class="sortable" id="myteam2">
 							{{range $q := .User.Picks}}
-							<li class="ui-state-default">{{$q.Name}} {{$q.Team}}</li>
+							<li class="player ui-state-default">{{$q.Name}} {{$q.Team}}</li>
 							{{end}}
 						</ul>
 					</td>
@@ -99,14 +104,18 @@
 					<td>
 						<ul class="sortable" id="rbs">
 							{{range $q := .Rosters.RB}}
-							<li class="ui-state-default">{{$q.Name}} {{$q.Team}}</li>
+							<li class="player ui-state-default">
+								<span id="pid">{{$q.PlayerID}}</span>
+								<span id="pname">{{$q.Name}}</span>
+								<span id="pteam">{{$q.Team}}</span>
+							</li>
 							{{end}}
 						</ul>
 					</td>
 					<td>
-						<ul class="sortable">
+						<ul class="sortable" id="myteam3">
 							{{range $q := .User.Picks}}
-							<li class="ui-state-default">{{$q.Name}} {{$q.Team}}</li>
+							<li class="player ui-state-default">{{$q.Name}} {{$q.Team}}</li>
 							{{end}}
 						</ul>
 					</td>
@@ -127,14 +136,18 @@
 					<td>
 						<ul class="sortable" id="wrs">
 							{{range $q := .Rosters.WR}}
-							<li class="ui-state-default">{{$q.Name}} {{$q.Team}}</li>
+							<li class="player ui-state-default">
+								<span id="pid">{{$q.PlayerID}}</span>
+								<span id="pname">{{$q.Name}}</span>
+								<span id="pteam">{{$q.Team}}</span>
+							</li>
 							{{end}}
 						</ul>
 					</td>
 					<td>
-						<ul class="sortable">
+						<ul class="sortable" id="myteam4">
 							{{range $q := .User.Picks}}
-							<li class="ui-state-default">{{$q.Name}} {{$q.Team}}</li>
+							<li class="player ui-state-default">{{$q.Name}} {{$q.Team}}</li>
 							{{end}}
 						</ul>
 					</td>
@@ -155,14 +168,18 @@
 					<td>
 						<ul class="sortable" id="tes">
 							{{range $q := .Rosters.TE}}
-							<li class="ui-state-default">{{$q.Name}} {{$q.Team}}</li>
+							<li class="player ui-state-default">
+								<span id="pid">{{$q.PlayerID}}</span>
+								<span id="pname">{{$q.Name}}</span>
+								<span id="pteam">{{$q.Team}}</span>
+							</li>
 							{{end}}
 						</ul>
 					</td>
 					<td>
-						<ul class="sortable">
+						<ul class="sortable" id="myteam5">
 							{{range $q := .User.Picks}}
-							<li class="ui-state-default">{{$q.Name}} {{$q.Team}}</li>
+							<li class="player ui-state-default">{{$q.Name}} {{$q.Team}}</li>
 							{{end}}
 						</ul>
 					</td>
@@ -183,14 +200,18 @@
 					<td>
 						<ul class="sortable" id="ks">
 							{{range $q := .Rosters.K}}
-							<li class="ui-state-default">{{$q.Name}} {{$q.Team}}</li>
+							<li class="player ui-state-default">
+								<span id="pid">{{$q.PlayerID}}</span>
+								<span id="pname">{{$q.Name}}</span>
+								<span id="pteam">{{$q.Team}}</span>
+							</li>
 							{{end}}
 						</ul>
 					</td>
 					<td>
-						<ul class="sortable">
+						<ul class="sortable" id="myteam6">
 							{{range $q := .User.Picks}}
-							<li class="ui-state-default">{{$q.Name}} {{$q.Team}}</li>
+							<li class="player ui-state-default">{{$q.Name}} {{$q.Team}}</li>
 							{{end}}
 						</ul>
 					</td>
@@ -211,14 +232,18 @@
 					<td>
 						<ul class="sortable" id="defs">
 							{{range $q := .Rosters.DEF}}
-							<li class="ui-state-default">{{$q.Name}} {{$q.Team}}</li>
+							<li class="player ui-state-default">
+								<span id="pid">{{$q.PlayerID}}</span>
+								<span id="pname">{{$q.Name}}</span>
+								<span id="pteam">{{$q.Team}}</span>
+							</li>
 							{{end}}
 						</ul>
 					</td>
 					<td>
-						<ul class="sortable">
+						<ul class="sortable" id="myteam7">
 							{{range $q := .User.Picks}}
-							<li class="ui-state-default">{{$q.Name}} {{$q.Team}}</li>
+							<li class="player ui-state-default">{{$q.Name}} {{$q.Team}}</li>
 							{{end}}
 						</ul>
 					</td>
@@ -231,7 +256,6 @@
 
 		{{range $t := .League}}
 		<div class="tab">
-<!--$t.Name = .Team`-->
 			<input type="radio" id="{{$t.TabID}}" name="tab-group-1" >
 			<label for="{{$t.TabID}}">{{$t.Name}}</label>
 

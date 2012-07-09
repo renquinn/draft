@@ -1,3 +1,7 @@
+#tabs {
+	margin: 40px;
+}
+
 .ui-tabs-hide {
 	display: none;
 }

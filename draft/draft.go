@@ -357,14 +357,13 @@ func SyncRosters(r *http.Request) (error) {
 	//b := bytes.NewBuffer(nil)
 	for t:= q.Run(c); ; {
 		var p Player
-		key, err := t.Next(&p)
+		_, err := t.Next(&p)
 		if err == datastore.Done {
 			break
 		}
 		if err != nil {
 			return err
 		}
-		fmt.Println("KEY, PLAYER",key, p)
 		id := p.PlayerID
 		pos := p.Position
 		switch pos {
@@ -381,7 +380,6 @@ func SyncRosters(r *http.Request) (error) {
 		case "DEF":
 			def[id] = p
 		}
-		fmt.Println(PLAYERS.TE)
 		all[id] = p
 	}
 	PLAYERS = Players{QB:qb,RB:rb,WR:wr,TE:te,K:k,DEF:def,ALL:all}
@@ -643,7 +641,6 @@ func keepers(w http.ResponseWriter, r *http.Request) {
 	u := User{Name: teamName[cookie.Value], Team: teamTeam[cookie.Value]}
 	page := Page{User: u, Rosters: PLAYERS}
 	errT := TEMPLATES.ExecuteTemplate(w,"keepers.html",page)
-	fmt.Println(errT)
 	if errT != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
@@ -709,58 +706,35 @@ func picked(w http.ResponseWriter, r *http.Request) {
 	// Use the cookie's value to lookup the teamNumber
 	team := teamNumber[cookie.Value]
 	// Retrieve the form values
-	pqb := r.FormValue("qb")
-	prb := r.FormValue("rb")
-	pwr := r.FormValue("wr")
-	pte := r.FormValue("te")
-	pk := r.FormValue("k")
-	pdef := r.FormValue("def")
-	if pqb != "nil" && (prb != "nil" || pwr != "nil" || pte != "nil" || pk != "nil" || pdef != "nil") {
-		http.Redirect(w, r, "/lobby", http.StatusFound)
-		return
-	}
-	if prb != "nil" && (pwr != "nil" || pte != "nil" || pk != "nil" || pdef != "nil") {
-		http.Redirect(w, r, "/lobby", http.StatusFound)
-		return
-	}
-	if pwr != "nil" && (pte != "nil" || pk != "nil" || pdef != "nil") {
-		http.Redirect(w, r, "/lobby", http.StatusFound)
-		return
-	}
-	if pte != "nil" && (pk != "nil" || pdef != "nil") {
-		http.Redirect(w, r, "/lobby", http.StatusFound)
-		return
-	}
-	if pk != "nil" && pdef != "nil" {
-		http.Redirect(w, r, "/lobby", http.StatusForbidden)
-		return
-	}
+	player := r.FormValue("player")
+	position := r.FormValue("position")
+
 	var pick Player
 	team--; // Because TEAMS is 0 based
-	if pqb != "nil" {
-		pick = PLAYERS.QB[pqb]
+	if position == "qb" {
+		pick = PLAYERS.QB[player]
 		TEAMS[team].QB = append(TEAMS[team].QB,pick)
-		delete(PLAYERS.QB, pqb)
-	} else if prb != "nil" {
-		pick = PLAYERS.RB[prb]
+		delete(PLAYERS.QB, player)
+	} else if position == "rb" {
+		pick = PLAYERS.RB[player]
 		TEAMS[team].RB = append(TEAMS[team].RB,pick)
-		delete(PLAYERS.RB, prb)
-	} else if pwr != "nil" {
-		pick = PLAYERS.WR[pwr]
+		delete(PLAYERS.RB, player)
+	} else if position == "wr" {
+		pick = PLAYERS.WR[player]
 		TEAMS[team].WR = append(TEAMS[team].WR,pick)
-		delete(PLAYERS.WR, pwr)
-	} else if pte != "nil" {
-		pick = PLAYERS.TE[pte]
+		delete(PLAYERS.WR, player)
+	} else if position == "te" {
+		pick = PLAYERS.TE[player]
 		TEAMS[team].TE = append(TEAMS[team].TE,pick)
-		delete(PLAYERS.TE, pte)
-	} else if pk != "nil" {
-		pick = PLAYERS.K[pk]
+		delete(PLAYERS.TE, player)
+	} else if position == "k" {
+		pick = PLAYERS.K[player]
 		TEAMS[team].K = append(TEAMS[team].K,pick)
-		delete(PLAYERS.K, pk)
-	} else if pdef != "nil" {
-		pick = PLAYERS.DEF[pdef]
+		delete(PLAYERS.K, player)
+	} else if position == "def" {
+		pick = PLAYERS.DEF[player]
 		TEAMS[team].DEF = append(TEAMS[team].DEF,pick)
-		delete(PLAYERS.DEF, pdef)
+		delete(PLAYERS.DEF, player)
 	}
 	ALLPICKS = append(ALLPICKS, pick)
 	team++; // Because TEAMS is 0 based
@@ -985,7 +959,7 @@ func setadmin(w http.ResponseWriter, r *http.Request) {
 		c := appengine.NewContext(r)
 		client := urlfetch.Client(c)
 		res, err := client.Get("http://api.fantasyfootballnerd.com/ffnPlayersXML.php?apiKey=2012050338875903")
-		//res, err := client.Get("http://squinn.php.cs.dixie.edu/players.xml")
+		//res, err := client.Get("http://squinn.php.cs.dixie.edu/players.xml") // For testing only
 		if err != nil {
 			fmt.Fprintf(w, `<html>ERROR: %v <br /><a href="/admin">Back</a></html>`,err)
 			return

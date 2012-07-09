@@ -1,10 +1,10 @@
 .sortable {
 	position: relative;
 	list-style-type: none;
-	margin: 10px;
+	margin: -10px 10px 10px 10px;
 	padding: 0;
 	width: 90%;
-	height: 400px;
+	height: 350px;
 	border: 1px solid #000;
 	overflow-y: scroll;
 }
@@ -14,7 +14,7 @@
 	padding: 5px;
 	color: #fff;
 	font-size: 1.2em;
-	height: 1.5em;
+	height: 25px;
 	line-height: 1.2em;
 }
 
@@ -23,11 +23,20 @@
 	background: rgba(20,20,20,.5);
 }
 
-.player:hover {
-	cursor: "crosshair";
-}
-
 .ui-state-highlight {
 	height: 1.5em;
 	line-height: 1.2em;
+}
+
+#pid {
+	display: none;
+}
+
+#pname {
+	margin: 5px;
+	font-size: 20px;
+}
+
+#pteam {
+	font-size: 15px;
 }
