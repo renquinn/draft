@@ -1,12 +1,19 @@
-#tabs {
-	margin: 40px;
+.tabs {
+	height: 80%;
+	margin: 25px;
 }
 
 .ui-tabs-hide {
 	display: none;
 }
 
-.ui-tabs-nav {
+#tabs1 {
+	display: inline;
+	float: left;
+	width: 40%;
+}
+
+#tabs1>.ui-tabs-nav {
 	display: block;
 	list-style-type: none;
 	float: left;
@@ -14,7 +21,7 @@
 	padding: 10px auto;
 }
 
-.ui-tabs-nav li {
+#tabs1>.ui-tabs-nav li {
 	display: inline;
 	float: left;
 	background: #000;
@@ -22,23 +29,23 @@
 	margin: 0 1px 0 0;
 }
 
-.ui-tabs-nav a {
+#tabs1>.ui-tabs-nav a {
 	text-decoration: none;
 	padding: 5px 15px;
 	color: #fff;
 }
 
-.ui-tabs-nav li.ui-tabs-selected {
+#tabs1>.ui-tabs-nav li.ui-tabs-selected {
 	border-bottom: 1px solid #fff;
 	background: #fff;
 }
 
-.ui-tabs-nav li.ui-tabs-selected > a {
+#tabs1>.ui-tabs-nav li.ui-tabs-selected > a {
 	color: #000;
 }
 
-.ui-tabs-panel {
-	width: 40%;
+#tabs1>.ui-tabs-panel {
+	width: 100%;
 	padding: 25px 25px;
 	background: #fff;
 }
@@ -50,4 +57,69 @@
 
 .sortables td {
 	width: 50%;
+}
+
+#tabs2 {
+	display: inline;
+	float: right;
+	width: 50%;
+	background: #fff;
+}
+
+#tabs2>.ui-tabs-nav {
+	float: left;
+	padding: 0;
+	margin: 0;
+	display: inline;
+	width: 26%;
+}
+
+#tabs2>.ui-tabs-nav li {
+	list-style-type: none;
+	background: #000;
+	border-bottom: 1px solid #000;
+	padding: 5px;
+}
+
+#tabs2>.ui-tabs-nav li:hover {
+	background: #f5d70c;
+}
+
+#tabs2>.ui-tabs-nav a {
+	text-decoration: none;
+	color: #fff;
+	margin: 0 auto;
+}
+
+#tabs2>.ui-tabs-nav >li.ui-tabs-selected {
+	border-bottom: 1px solid #fff;
+	background: #fff;
+}
+
+#tabs2>.ui-tabs-nav li.ui-tabs-selected > a {
+	color: #000;
+}
+
+#tabs2>.ui-tabs-panel {
+	float: right;
+	width: auto;
+	background: #fff;
+	width: 74%;
+	height: 60%;
+}
+
+#tabs2>.ui-tabs-panel>table {
+	margin: 25px auto;
+	display: inline;
+	width: 16%;
+	vertical-align: top;
+}
+
+#tabs2>.ui-tabs-panel th {
+	padding: 7px;
+	border-bottom: 3px solid #000;
+}
+
+#tabs2>.ui-tabs-panel td {
+	font-size: 12px;
 }

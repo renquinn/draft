@@ -168,6 +168,7 @@ body{
 	width:400px;
 }
 
+/*
 .tabs {
 	position: relative;
 	min-height: 300px;
@@ -242,6 +243,7 @@ select {
 	border-radius: 3px;
 	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#999), color-stop(25%, #ccc), to(#333));
 }
+*/
 
 .button {
 	background-color:#999;

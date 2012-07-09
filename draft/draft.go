@@ -66,18 +66,18 @@ var teamPassword = map[string] string {
 	"test": "test123",
 }
 var teamNumber = map[string] int {
-	"dixie": 1,
+	"dixie": 12,
 	"b_ez_on": 2,
 	"up_n_at": 3,
 	"i_am_ba": 4,
-	"rob_do": 5,
-	"bhers": 6,
-	"el_gor": 7,
-	"nativ": 8,
+	"rob_do": 11,
+	"bhers": 7,
+	"el_gor": 6,
+	"nativ": 1,
 	"p_town": 9,
 	"hit_sq": 10,
-	"impac": 11,
-	"ukrai": 12,
+	"impac": 5,
+	"ukrai": 8,
 }
 var teamName = map[string] string {
 	"dixie": "Skyler",
@@ -593,7 +593,7 @@ func lobby(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Create User using cookie username to lookup Name and Team
-	u := User{Name: teamName[cookie.Value], Team: teamTeam[cookie.Value], Picks: p}
+	u := User{Name: teamName[cookie.Value], Team: teamTeam[cookie.Value], Picks: p, Number: teamNumber[cookie.Value]}
 	pause := ""
 	if !PAUSE {
 		pause = "pause"
@@ -996,7 +996,7 @@ func init() {
 	for i:=1;i<=NUMTEAMS;i++ {
 		t := rlookup(teamNumber,i)
 		id := strconv.Itoa(i)
-		TEAMS = append(TEAMS,Team{Name: teamTeam[t],Number:i,TabID:"tab-"+id})
+		TEAMS = append(TEAMS,Team{Name: teamTeam[t],Number:i,TabID:"tabs2-"+id})
 	}
 
 	http.HandleFunc("/test", test)

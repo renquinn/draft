@@ -14,18 +14,20 @@
 		<input id="input-player" type="text" name="player" style="display: none;" />
 		<input id="input-position" type="text" name="position" style="display: none;" />
 	</form>
-	  <div id="tabs">
+	<span class="number" style="display: none;">{{.User.Number}}</span>
+
+	  <div class="tabs" id="tabs1">
 	  	<ul>
 			<!--<li><a href="#tabs-1">Top 200</a></li>-->
-			<li><a href="#tabs-2">QBs</a></li>
-			<li><a href="#tabs-3">RBs</a></li>
-			<li><a href="#tabs-4">WRs</a></li>
-			<li><a href="#tabs-5">TEs</a></li>
-			<li><a href="#tabs-6">Ks</a></li>
-			<li><a href="#tabs-7">DEFs</a></li>
+			<li><a href="#tabs1-2">QBs</a></li>
+			<li><a href="#tabs1-3">RBs</a></li>
+			<li><a href="#tabs1-4">WRs</a></li>
+			<li><a href="#tabs1-5">TEs</a></li>
+			<li><a href="#tabs1-6">Ks</a></li>
+			<li><a href="#tabs1-7">DEFs</a></li>
 		</ul>
 		<!--
-		<div id="tabs-1">
+		<div id="tabs1-1">
 			<table class="sortables">
 				<tr>
 					<td>
@@ -58,7 +60,7 @@
 			</table>
 		</div>
 		-->
-		<div id="tabs-2">
+		<div id="tabs1-2">
 			<table class="sortables">
 				<tr>
 					<td>
@@ -90,7 +92,7 @@
 				</tr>
 			</table>
 		</div>
-		<div id="tabs-3">
+		<div id="tabs1-3">
 			<table class="sortables">
 				<tr>
 					<td>
@@ -122,7 +124,7 @@
 				</tr>
 			</table>
 		</div>
-		<div id="tabs-4">
+		<div id="tabs1-4">
 			<table class="sortables">
 				<tr>
 					<td>
@@ -154,7 +156,7 @@
 				</tr>
 			</table>
 		</div>
-		<div id="tabs-5">
+		<div id="tabs1-5">
 			<table class="sortables">
 				<tr>
 					<td>
@@ -186,7 +188,7 @@
 				</tr>
 			</table>
 		</div>
-		<div id="tabs-6">
+		<div id="tabs1-6">
 			<table class="sortables">
 				<tr>
 					<td>
@@ -218,7 +220,7 @@
 				</tr>
 			</table>
 		</div>
-		<div id="tabs-7">
+		<div id="tabs1-7">
 			<table class="sortables">
 				<tr>
 					<td>
@@ -252,6 +254,92 @@
 		</div>
 	  </div>
 
+
+	<div class="tabs" id="tabs2">
+		<ul>
+			{{range $t := .League}}
+			<li><a href="#{{$t.TabID}}">{{$t.Name}}</a></li>
+			{{end}}
+		</ul>
+		{{range $t := .League}}
+		<div id="{{$t.TabID}}">
+						<table>
+							<tr>
+								<th>
+								QBs
+								</th>
+							</tr>
+						{{range $p := $t.QB}}
+							<tr>
+								<td>{{$p.Name}} {{$p.Team}}
+							</tr>
+						{{end}}
+						</table>
+						<table>
+							<tr>
+								<th>
+								RBs
+								</th>
+							</tr>
+						{{range $p := $t.RB}}
+							<tr>
+								<td>{{$p.Name}} {{$p.Team}}
+							</tr>
+						{{end}}
+						</table>
+						<table>
+							<tr>
+								<th>
+								WRs
+								</th>
+							</tr>
+						{{range $p := $t.WR}}
+							<tr>
+								<td>{{$p.Name}} {{$p.Team}}
+							</tr>
+						{{end}}
+						</table>
+						<table>
+							<tr>
+								<th>
+								TEs
+								</th>
+							</tr>
+						{{range $p := $t.TE}}
+							<tr>
+								<td>{{$p.Name}} {{$p.Team}}
+							</tr>
+						{{end}}
+						</table>
+						<table>
+							<tr>
+								<th>
+								Ks
+								</th>
+							</tr>
+						{{range $p := $t.K}}
+							<tr>
+								<td>{{$p.Name}} {{$p.Team}}
+							</tr>
+						{{end}}
+						</table>
+						<table>
+							<tr>
+								<th>
+								DEFs
+								</th>
+							</tr>
+						{{range $p := $t.DEF}}
+							<tr>
+								<td>{{$p.Name}} {{$p.Team}}
+							</tr>
+						{{end}}
+						</table>
+		</div>
+		{{end}}
+	</div>
+
+<!--
 	<div class="tabs">
 
 		{{range $t := .League}}
@@ -298,6 +386,7 @@
 
 
 	</div>
+	-->
 
 	{{template "footer.html"}}
 	<script type="text/javascript" src="javascripts/jquery.ui.core.min.js"></script>
