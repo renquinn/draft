@@ -466,16 +466,16 @@ func test(w http.ResponseWriter, r *http.Request) {
 // Enter username and password to log in
 // Allow possiblity to enter keepers
 func index(w http.ResponseWriter, r *http.Request) {
-	/* LEAVE COMMENTED FOR TESTING
+	// /* COMMENT FOR TESTING
 	//Get Cookie
-	//cookie, err := r.Cookie("username")
+	cookie, err := r.Cookie("username")
 	//If exists 
 	if err == nil {
 		//forward to lobby
 		http.SetCookie(w, cookie)
 		http.Redirect(w, r, "/lobby", http.StatusFound)
 	}
-	*/
+	// */
 	errT := TEMPLATES.ExecuteTemplate(w,"index.html",nil)
 	if errT != nil {
 		http.Error(w, errT.Error(), http.StatusInternalServerError)
@@ -575,6 +575,8 @@ func news(w http.ResponseWriter, r *http.Request) {
 // Displays the user's picks as well as the entire league's recent picks
 // Displays each`team's picks
 // Allows user to make a pick
+// FUTURE: Display whose turn it is
+// FUTURE: Check the header for a "Not your turn" code
 // FUTURE: Add a chat window (Identical to the Cuddle demo)
 func lobby(w http.ResponseWriter, r *http.Request) {
 	// Get Cookie
@@ -694,6 +696,9 @@ func keepme(w http.ResponseWriter, r *http.Request) {
 
 // Handle Pick
 // Submits the draft pick and redirects the user to the lobby.
+// FUTURE: 	If the team's number is not the current pick number
+//			redirect to the lobby with a "Not your turn" code in
+//			the header.
 func picked(w http.ResponseWriter, r *http.Request) {
 	//Get Cookie
 	cookie, err := r.Cookie("username")
@@ -769,6 +774,7 @@ func timer(w http.ResponseWriter, r *http.Request) {
 // Draft Board Page
 // Here the user can see all of the draft picks.
 // FUTURE: Use the App Engine Channel API
+// FUTURE: Use a template
 func draft(w http.ResponseWriter, r *http.Request) {
 	// Generate HTML for the draft table
 	page := `
@@ -890,8 +896,15 @@ func setadmin(w http.ResponseWriter, r *http.Request) {
 			for j:=0;j<NUMROUNDS;j++ {
 				PICKS[i][j] = p
 			}
+			// FUTURE: Make sure EVERYTHING is cleared.
+			// I'm not sure if this works yet
+			TEAMS[i].QB = TEAMS[i].QB[:0]
+			TEAMS[i].QB = TEAMS[i].RB[:0]
+			TEAMS[i].QB = TEAMS[i].WR[:0]
+			TEAMS[i].QB = TEAMS[i].TE[:0]
+			TEAMS[i].QB = TEAMS[i].K[:0]
+			TEAMS[i].QB = TEAMS[i].DEF[:0]
 		}
-		// FUTURE: Make sure EVERYTHING is cleared.
 		SyncRosters(r)
 	} else if adminfunction == "override" {
 		// Override Pick

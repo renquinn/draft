@@ -1,0 +1,33 @@
+#admin{
+	width:1100px;
+	margin: 30px auto;
+	padding:30px 30px 30px 95px;
+	-webkit-text-stroke: 0px black;
+}
+
+
+#admin b {
+	font-family: "bold";
+	font-size:150%;
+	color:#fff;
+	-webkit-text-stroke: 1px black;
+}
+
+#admin p {
+	color:#ccc;
+	margin: 0 0 10px 20px;
+}
+
+#admin td:nth-child(1){
+	width:225px;
+}
+
+#admin td:nth-child(2){
+	vertical-align:top;
+	width:300px;
+	color:#ccc;
+}
+
+#admin td:nth-child(3){
+	width:400px;
+}

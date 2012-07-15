@@ -29,6 +29,10 @@
 	line-height: 1.2em;
 }
 
+ul.sortable > a {
+	text-decoration: none;
+}
+
 #pid {
 	display: none;
 }
