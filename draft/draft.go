@@ -47,6 +47,8 @@ var PICKS[13][16]Player // The main draft data, each pick is stored here PICKS[N
 var ALLPICKS []Player
 var PLAYERS Players // All players
 var TEAMS []Team
+var CURPICK int
+var CURROUND int
 
 // Team info
 var ADMINS = []string {"dixie","el_gor"}
@@ -118,6 +120,8 @@ type Page struct {
 	League []Team
 	Pause string
 	Players Players
+	CurrentPick string
+	CurrentRound int
 }
 
 type User struct {
@@ -226,6 +230,24 @@ type Athletes struct {
 // Helpers 
 // ===============================
 
+// Points the turn pointer to the next team
+func nextPick() {
+	if CURROUND % 2 == 0 {
+		// even
+		if CURPICK == 1 {
+			CURROUND++
+		} else {
+			CURPICK--
+		}
+	} else {
+		// odd
+		if CURPICK == 12 {
+			CURROUND++
+		} else {
+			CURPICK++
+		}
+	}
+}
 // Returns a User struct from the datastore
 func getUser(c appengine.Context, username string) (*User, error) {
 	u := &User{Username: username}
@@ -600,7 +622,8 @@ func lobby(w http.ResponseWriter, r *http.Request) {
 	if !PAUSE {
 		pause = "pause"
 	}
-	page := &Page{League: TEAMS, User: u, Rosters: PLAYERS, AllPicks: ALLPICKS, Pause: pause}
+	picker := teamTeam[rlookup(teamNumber,CURPICK)]
+	page := &Page{League: TEAMS, User: u, Rosters: PLAYERS, AllPicks: ALLPICKS, Pause: pause, CurrentPick: picker, CurrentRound: CURROUND}
 	errT := TEMPLATES.ExecuteTemplate(w,"lobby.html",page)
 	if errT != nil {
 		http.Error(w, errT.Error(), http.StatusInternalServerError)
@@ -1006,6 +1029,8 @@ func init() {
 	NUMROUNDS = 15
 	NUMTEAMS = 12
 	PAUSE = true
+	CURPICK = 1
+	CURROUND = 1
 
 	for i:=1;i<=NUMTEAMS;i++ {
 		t := rlookup(teamNumber,i)

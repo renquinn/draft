@@ -4,6 +4,7 @@
 	{{template "head.html" .Pause}}
 	<link rel="stylesheet" type="text/css" href="stylesheets/sortable.css" />
 	<link rel="stylesheet" type="text/css" href="stylesheets/tabs.css" />
+	<link rel="stylesheet" type="text/css" href="stylesheets/lobby.css" />
 </head>
 
 <body>
@@ -15,6 +16,16 @@
 		<input id="input-position" type="text" name="position" style="display: none;" />
 	</form>
 	<span class="number" style="display: none;">{{.User.Number}}</span>
+
+	<div class="info">
+		<table>
+			<tr>
+				<td>Current Pick: {{.CurrentPick}}</td>
+				<td>Round: {{.CurrentRound}}</td>
+				<td>Last Pick: (Under Construction)</td>
+			</tr>
+		</table>
+	</div>
 
 	  <div class="tabs" id="tabs1">
 	  	<ul>
