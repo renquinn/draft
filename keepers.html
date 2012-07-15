@@ -7,9 +7,10 @@
 <body>
 	{{template "navbar.html"}}
 
-<div id="admin">
-<h2>{{.User.Team |html}}</h2>
+<div class="white-box">
 
+	<div class="form">
+	<h2>{{.User.Team |html}}</h2>
 
 	<form action="/keepme" method="POST">
 		<select name="num">
@@ -114,6 +115,9 @@
 			</table>
 			<input type="submit" value="Submit">
 	</form>
+
+	</div>
+
 </div>
 
 

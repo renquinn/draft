@@ -67,17 +67,17 @@ var teamPassword = map[string] string {
 }
 var teamNumber = map[string] int {
 	"dixie": 12,
-	"b_ez_on": 2,
-	"up_n_at": 3,
-	"i_am_ba": 4,
+	"b_ez_on": 6,
+	"up_n_at": 4,
+	"i_am_ba": 5,
 	"rob_do": 11,
-	"bhers": 7,
-	"el_gor": 6,
+	"bhers": 8,
+	"el_gor": 7,
 	"nativ": 1,
-	"p_town": 9,
-	"hit_sq": 10,
-	"impac": 5,
-	"ukrai": 8,
+	"p_town": 10,
+	"hit_sq": 9,
+	"impac": 3,
+	"ukrai": 2,
 }
 var teamName = map[string] string {
 	"dixie": "Skyler",
@@ -775,6 +775,7 @@ func draft(w http.ResponseWriter, r *http.Request) {
 <html>
 <head>
 <link rel="stylesheet" type="text/css" href="stylesheets/style.css" />
+<link rel="stylesheet" type="text/css" href="stylesheets/navbar.css" />
 `
 	if !PAUSE {
 		page += `<script type="text/javascript" src="javascripts/timer.js"></script>`

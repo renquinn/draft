@@ -1,5 +1,5 @@
 .tabs {
-	height: 80%;
+	height: 465px;
 	margin: 25px;
 }
 
@@ -27,6 +27,8 @@
 	background: #000;
 	border-bottom: 1px solid #000;
 	margin: 0 1px 0 0;
+	width: 15%;
+	padding-right: 5px;
 }
 
 #tabs1>.ui-tabs-nav a {
@@ -46,12 +48,17 @@
 
 #tabs1>.ui-tabs-panel {
 	width: 100%;
-	padding: 25px 25px;
+	padding: 25px 0px 25px 25px;
 	background: #fff;
 }
 
+.header {
+	font-size: 25px;
+	width: 35%;
+}
+
 .sortables {
-	width: 100%;
+	width: 90%;
 	border: 3px solid #fff;
 }
 
@@ -60,7 +67,7 @@
 }
 
 #tabs2 {
-	display: inline;
+	display: block;
 	float: right;
 	width: 50%;
 	background: #fff;

@@ -85,7 +85,10 @@
 					<td>
 						<ul class="sortable" id="myteam2">
 							{{range $q := .User.Picks}}
-							<li class="player ui-state-default">{{$q.Name}} {{$q.Team}}</li>
+							<li class="player ui-state-default">
+								<span id="pname">{{$q.Name}}</span>
+								<span id="pteam">{{$q.Team}}</span>
+							</li>
 							{{end}}
 						</ul>
 					</td>
@@ -117,7 +120,10 @@
 					<td>
 						<ul class="sortable" id="myteam3">
 							{{range $q := .User.Picks}}
-							<li class="player ui-state-default">{{$q.Name}} {{$q.Team}}</li>
+							<li class="player ui-state-default">
+								<span id="pname">{{$q.Name}}</span>
+								<span id="pteam">{{$q.Team}}</span>
+							</li>
 							{{end}}
 						</ul>
 					</td>
@@ -149,7 +155,10 @@
 					<td>
 						<ul class="sortable" id="myteam4">
 							{{range $q := .User.Picks}}
-							<li class="player ui-state-default">{{$q.Name}} {{$q.Team}}</li>
+							<li class="player ui-state-default">
+								<span id="pname">{{$q.Name}}</span>
+								<span id="pteam">{{$q.Team}}</span>
+							</li>
 							{{end}}
 						</ul>
 					</td>
@@ -181,7 +190,10 @@
 					<td>
 						<ul class="sortable" id="myteam5">
 							{{range $q := .User.Picks}}
-							<li class="player ui-state-default">{{$q.Name}} {{$q.Team}}</li>
+							<li class="player ui-state-default">
+								<span id="pname">{{$q.Name}}</span>
+								<span id="pteam">{{$q.Team}}</span>
+							</li>
 							{{end}}
 						</ul>
 					</td>
@@ -213,7 +225,10 @@
 					<td>
 						<ul class="sortable" id="myteam6">
 							{{range $q := .User.Picks}}
-							<li class="player ui-state-default">{{$q.Name}} {{$q.Team}}</li>
+							<li class="player ui-state-default">
+								<span id="pname">{{$q.Name}}</span>
+								<span id="pteam">{{$q.Team}}</span>
+							</li>
 							{{end}}
 						</ul>
 					</td>
@@ -245,7 +260,10 @@
 					<td>
 						<ul class="sortable" id="myteam7">
 							{{range $q := .User.Picks}}
-							<li class="player ui-state-default">{{$q.Name}} {{$q.Team}}</li>
+							<li class="player ui-state-default">
+								<span id="pname">{{$q.Name}}</span>
+								<span id="pteam">{{$q.Team}}</span>
+							</li>
 							{{end}}
 						</ul>
 					</td>
@@ -338,55 +356,6 @@
 		</div>
 		{{end}}
 	</div>
-
-<!--
-	<div class="tabs">
-
-		{{range $t := .League}}
-		<div class="tab">
-			<input type="radio" id="{{$t.TabID}}" name="tab-group-1" >
-			<label for="{{$t.TabID}}">{{$t.Name}}</label>
-
-			<div class="content">
-				<table cellspacing="20">
-					<tr>
-					{{range $p := $t.QB}}
-						<td>QB: {{$p.Name}} {{$p.Team}}</td>
-					{{end}}
-					</tr>
-					<tr>
-					{{range $p := $t.RB}}
-						<td>RB: {{$p.Name}} {{$p.Team}}</td>
-					{{end}}
-					</tr>
-					<tr>
-					{{range $p := $t.WR}}
-						<td>WR: {{$p.Name}} {{$p.Team}}</td>
-					{{end}}
-					</tr>
-					<tr>
-					{{range $p := $t.TE}}
-						<td>TE: {{$p.Name}} {{$p.Team}}</td>
-					{{end}}
-					</tr>
-					<tr>
-					{{range $p := $t.K}}
-						<td>K: {{$p.Name}} {{$p.Team}}</td>
-					{{end}}
-					</tr>
-					<tr>
-					{{range $p := $t.DEF}}
-						<td>DEF: {{$p.Name}} {{$p.Team}}</td>
-					{{end}}
-					</tr>
-				</table>
-			</div>
-		</div>
-		{{end}}
-
-
-	</div>
-	-->
 
 	{{template "footer.html"}}
 	<script type="text/javascript" src="javascripts/jquery.ui.core.min.js"></script>
