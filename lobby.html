@@ -20,9 +20,14 @@
 	<div class="info">
 		<table>
 			<tr>
-				<td>Current Pick: {{.CurrentPick}}</td>
-				<td>Round: {{.CurrentRound}}</td>
-				<td>Last Pick: (Under Construction)</td>
+				<th>Current Pick</th>
+				<th>Round</th>
+				<th>Last Pick</th>
+			</tr>
+			<tr>
+				<th>{{.CurrentPick}}</th>
+				<th>{{.CurrentRound}}</th>
+				<th>(Under Construction)</th>
 			</tr>
 		</table>
 	</div>
@@ -377,6 +382,13 @@
 	<script type="text/javascript" src="javascripts/sortable.js"></script>
 	<script type="text/javascript" src="javascripts/jquery.ui.tabs.min.js"></script>
 	<script type="text/javascript" src="javascripts/tabs.js"></script>
+	{{if .HelperString}}
+	<script type="text/javascript">
+		$(function () {
+			alert("It is not your turn!");
+		});
+	</script>
+	{{end}}
 </body>
 
 </html>

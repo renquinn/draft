@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"html/template"
+	"log"
 
 	"strconv"
 	"time"
@@ -27,8 +28,10 @@ var TEMPLATES = template.Must(template.ParseFiles(
 				"index.html",
 				"head.html",
 				"navbar.html",
+				"mnavbar.html",
 				"footer.html",
 				"lobby.html",
+				"mlobby.html",
 				"keepers.html",
 				"admin.html",
 				"test.html",
@@ -122,6 +125,7 @@ type Page struct {
 	Players Players
 	CurrentPick string
 	CurrentRound int
+	HelperString string
 }
 
 type User struct {
@@ -495,7 +499,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 	if err == nil {
 		//forward to lobby
 		http.SetCookie(w, cookie)
-		http.Redirect(w, r, "/lobby", http.StatusFound)
+		//http.Redirect(w, r, "/lobby", http.StatusFound)
 	}
 	// */
 	errT := TEMPLATES.ExecuteTemplate(w,"index.html",nil)
@@ -597,7 +601,6 @@ func news(w http.ResponseWriter, r *http.Request) {
 // Displays the user's picks as well as the entire league's recent picks
 // Displays each`team's picks
 // Allows user to make a pick
-// FUTURE: Display whose turn it is
 // FUTURE: Check the header for a "Not your turn" code
 // FUTURE: Add a chat window (Identical to the Cuddle demo)
 func lobby(w http.ResponseWriter, r *http.Request) {
@@ -623,10 +626,22 @@ func lobby(w http.ResponseWriter, r *http.Request) {
 		pause = "pause"
 	}
 	picker := teamTeam[rlookup(teamNumber,CURPICK)]
-	page := &Page{League: TEAMS, User: u, Rosters: PLAYERS, AllPicks: ALLPICKS, Pause: pause, CurrentPick: picker, CurrentRound: CURROUND}
-	errT := TEMPLATES.ExecuteTemplate(w,"lobby.html",page)
-	if errT != nil {
-		http.Error(w, errT.Error(), http.StatusInternalServerError)
+	turnHeader := w.Header().Get("NOTYOURTURN")
+	log.Println(turnHeader)
+	page := &Page{
+		League: TEAMS,
+		User: u,
+		Rosters: PLAYERS,
+		AllPicks: ALLPICKS,
+		Pause: pause,
+		CurrentPick: picker,
+		CurrentRound: CURROUND,
+		HelperString: turnHeader}
+	// FUTURE: Determine how to detect mobile phones
+	//err = TEMPLATES.ExecuteTemplate(w,"mlobby.html",page) // Fix draft board
+	err = TEMPLATES.ExecuteTemplate(w,"lobby.html",page)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 
 	// Set cookie
@@ -733,6 +748,14 @@ func picked(w http.ResponseWriter, r *http.Request) {
 	}
 	// Use the cookie's value to lookup the teamNumber
 	team := teamNumber[cookie.Value]
+	// If the user picked out of turn
+	if !PAUSE {
+		if teamNumber[cookie.Value] != CURPICK {
+			w.Header().Set("NOTYOURTURN","TRUE")
+			http.Redirect(w, r, "/lobby", http.StatusFound)
+			return
+		}
+	}
 	// Retrieve the form values
 	player := r.FormValue("player")
 	position := r.FormValue("position")
@@ -922,11 +945,11 @@ func setadmin(w http.ResponseWriter, r *http.Request) {
 			// FUTURE: Make sure EVERYTHING is cleared.
 			// I'm not sure if this works yet
 			TEAMS[i].QB = TEAMS[i].QB[:0]
-			TEAMS[i].QB = TEAMS[i].RB[:0]
-			TEAMS[i].QB = TEAMS[i].WR[:0]
-			TEAMS[i].QB = TEAMS[i].TE[:0]
-			TEAMS[i].QB = TEAMS[i].K[:0]
-			TEAMS[i].QB = TEAMS[i].DEF[:0]
+			TEAMS[i].RB = TEAMS[i].RB[:0]
+			TEAMS[i].WR = TEAMS[i].WR[:0]
+			TEAMS[i].TE = TEAMS[i].TE[:0]
+			TEAMS[i].K = TEAMS[i].K[:0]
+			TEAMS[i].DEF = TEAMS[i].DEF[:0]
 		}
 		SyncRosters(r)
 	} else if adminfunction == "override" {
@@ -959,6 +982,8 @@ func setadmin(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// Override draft pick
+		// FUTURE: 	In addition to adding the pick to PICKS,
+		//			add it to the teams positional list
 		if _, present := PLAYERS.QB[player]; present {
 			PICKS[teamNumber[team]][round] = PLAYERS.QB[player]
 			delete(PLAYERS.QB, player)
@@ -1001,6 +1026,7 @@ func setadmin(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprintf(w, `<html>ERROR: %v <br /><a href="/admin">Back</a></html>`,err)
 			return
 		}
+		log.Println(res.Body)
 		defer res.Body.Close()
 		data := make([]byte,1e6)
 		var plist []Player
