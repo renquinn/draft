@@ -10,6 +10,7 @@
 <div class="white-box">
 
 	<div class="form">
+	<center>
 	<h2>{{.User.Team |html}}</h2>
 
 	<form action="/keepme" method="POST">
@@ -26,9 +27,36 @@
 					<td>
 					<select name="player1">
 						<option value="nil">Keeper 1</option>
-						{{range $q := .Rosters.ALL }}
+					<optgroup label="QBs">
+						{{range $q := .Rosters.QB }}
 						<option value="{{$q.PlayerID}}">{{$q.Name}}, {{$q.Team}}</option>
 						{{end}}
+					</optgroup>
+					<optgroup label="RBs">
+						{{range $q := .Rosters.RB }}
+						<option value="{{$q.PlayerID}}">{{$q.Name}}, {{$q.Team}}</option>
+						{{end}}
+					</optgroup>
+					<optgroup label="WRs">
+						{{range $q := .Rosters.WR }}
+						<option value="{{$q.PlayerID}}">{{$q.Name}}, {{$q.Team}}</option>
+						{{end}}
+					</optgroup>
+					<optgroup label="TEs">
+						{{range $q := .Rosters.TE }}
+						<option value="{{$q.PlayerID}}">{{$q.Name}}, {{$q.Team}}</option>
+						{{end}}
+					</optgroup>
+					<optgroup label="Ks">
+						{{range $q := .Rosters.K }}
+						<option value="{{$q.PlayerID}}">{{$q.Name}}, {{$q.Team}}</option>
+						{{end}}
+					</optgroup>
+					<optgroup label="DEFs">
+						{{range $q := .Rosters.DEF }}
+						<option value="{{$q.PlayerID}}">{{$q.Name}}, {{$q.Team}}</option>
+						{{end}}
+					</optgroup>
 					</select>
 					</td>
 					<td>
@@ -56,9 +84,36 @@
 					<td>
 					<select name="player2">
 						<option value="nil">Keeper 2</option>
-						{{range $q := .Rosters.ALL}}
+					<optgroup label="QBs">
+						{{range $q := .Rosters.QB }}
 						<option value="{{$q.PlayerID}}">{{$q.Name}}, {{$q.Team}}</option>
 						{{end}}
+					</optgroup>
+					<optgroup label="RBs">
+						{{range $q := .Rosters.RB }}
+						<option value="{{$q.PlayerID}}">{{$q.Name}}, {{$q.Team}}</option>
+						{{end}}
+					</optgroup>
+					<optgroup label="WRs">
+						{{range $q := .Rosters.WR }}
+						<option value="{{$q.PlayerID}}">{{$q.Name}}, {{$q.Team}}</option>
+						{{end}}
+					</optgroup>
+					<optgroup label="TEs">
+						{{range $q := .Rosters.TE }}
+						<option value="{{$q.PlayerID}}">{{$q.Name}}, {{$q.Team}}</option>
+						{{end}}
+					</optgroup>
+					<optgroup label="Ks">
+						{{range $q := .Rosters.K }}
+						<option value="{{$q.PlayerID}}">{{$q.Name}}, {{$q.Team}}</option>
+						{{end}}
+					</optgroup>
+					<optgroup label="DEFs">
+						{{range $q := .Rosters.DEF }}
+						<option value="{{$q.PlayerID}}">{{$q.Name}}, {{$q.Team}}</option>
+						{{end}}
+					</optgroup>
 					</select>
 					</td>
 					<td>
@@ -86,9 +141,36 @@
 					<td>
 					<select name="player3">
 						<option value="nil">Keeper 3</option>
-						{{range $q := .Rosters.ALL}}
+					<optgroup label="QBs">
+						{{range $q := .Rosters.QB }}
 						<option value="{{$q.PlayerID}}">{{$q.Name}}, {{$q.Team}}</option>
 						{{end}}
+					</optgroup>
+					<optgroup label="RBs">
+						{{range $q := .Rosters.RB }}
+						<option value="{{$q.PlayerID}}">{{$q.Name}}, {{$q.Team}}</option>
+						{{end}}
+					</optgroup>
+					<optgroup label="WRs">
+						{{range $q := .Rosters.WR }}
+						<option value="{{$q.PlayerID}}">{{$q.Name}}, {{$q.Team}}</option>
+						{{end}}
+					</optgroup>
+					<optgroup label="TEs">
+						{{range $q := .Rosters.TE }}
+						<option value="{{$q.PlayerID}}">{{$q.Name}}, {{$q.Team}}</option>
+						{{end}}
+					</optgroup>
+					<optgroup label="Ks">
+						{{range $q := .Rosters.K }}
+						<option value="{{$q.PlayerID}}">{{$q.Name}}, {{$q.Team}}</option>
+						{{end}}
+					</optgroup>
+					<optgroup label="DEFs">
+						{{range $q := .Rosters.DEF }}
+						<option value="{{$q.PlayerID}}">{{$q.Name}}, {{$q.Team}}</option>
+						{{end}}
+					</optgroup>
 					</select>
 					</td>
 					<td>
@@ -113,9 +195,11 @@
 					</td>
 				</tr>
 			</table>
+			<br />
 			<input type="submit" value="Submit">
 	</form>
 
+	</center>
 	</div>
 
 </div>

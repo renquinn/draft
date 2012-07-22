@@ -7,7 +7,7 @@
 	max-width: 200px;
 	height: 350px;
 	border: 1px solid #000;
-	overflow-y: scroll;
+	overflow: auto;
 }
 
 .sortable li {
@@ -17,6 +17,7 @@
 	font-size: 18px;
 	height: 35px;
 	line-height: 10px;
+	position: relative;
 }
 
 .player {

@@ -1,7 +1,7 @@
 $(function() {
 
 // This might not work since right now there is no way
-// to pull the players position
+// to pull the players rank
 /*
 	$( "#top200, #myteam1" ).sortable({
 		cursor: "move",
@@ -22,7 +22,7 @@ $(function() {
 	*/
 
 	$( "#qbs, #myteam2" ).sortable({
-		cursor: "move",
+		cursor: 'move',
 		scrollSensitivity: 1,
 		scrollSpeed: 10,
 		distance: 10,

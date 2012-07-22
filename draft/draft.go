@@ -1,13 +1,16 @@
+// FUTURE: Add keepers to positional lists
 package main
 
 import (
 	"fmt"
 	"net/http"
 	"html/template"
-	"log"
+	//"log"
 
 	"strconv"
+	"strings"
 	"time"
+	"sort"
 
 	"appengine"
 	"appengine/urlfetch"
@@ -119,7 +122,8 @@ var teamTeam = map[string] string {
 type Page struct {
 	User User
 	AllPicks []Player
-	Rosters Players
+	//Rosters Players
+	Rosters PlayersSlices
 	League []Team
 	Pause string
 	Players Players
@@ -163,6 +167,16 @@ type Players struct {
 	ALL map[string]Player
 }
 
+type PlayersSlices struct {
+	QB PlayersSlice
+	RB PlayersSlice
+	WR PlayersSlice
+	TE PlayersSlice
+	K PlayersSlice
+	DEF PlayersSlice
+	ALL PlayersSlice
+}
+
 /*
  * Template Structs
  */
@@ -170,6 +184,22 @@ type Players struct {
 type Head struct {
 	Title string
 	Pause bool
+}
+
+type PlayersSlice []Player
+
+func (ps PlayersSlice) Len() int {
+	return len(ps)
+}
+
+func (ps PlayersSlice) Less(i, j int) bool{
+	last1 := strings.Split(ps[i].Name," ")[1]
+	last2 := strings.Split(ps[j].Name," ")[1]
+	return last1 < last2
+}
+
+func (ps PlayersSlice) Swap(i, j int) {
+	ps[i], ps[j] = ps[j], ps[i]
 }
 
 /*
@@ -233,6 +263,53 @@ type Athletes struct {
 // ===============================
 // Helpers 
 // ===============================
+
+func playersSlice() PlayersSlices {
+	qb := make(PlayersSlice, len(PLAYERS.QB))
+	rb := make(PlayersSlice, len(PLAYERS.RB))
+	wr := make(PlayersSlice, len(PLAYERS.WR))
+	te := make(PlayersSlice, len(PLAYERS.TE))
+	k := make(PlayersSlice, len(PLAYERS.K))
+	def := make(PlayersSlice, len(PLAYERS.DEF))
+
+	i := 0
+	for _, v := range PLAYERS.QB {
+		qb[i] = v
+		i++
+	}
+	i = 0
+	for _, v := range PLAYERS.RB {
+		rb[i] = v
+		i++
+	}
+	i = 0
+	for _, v := range PLAYERS.WR {
+		wr[i] = v
+		i++
+	}
+	i = 0
+	for _, v := range PLAYERS.TE {
+		te[i] = v
+		i++
+	}
+	i = 0
+	for _, v := range PLAYERS.K {
+		k[i] = v
+		i++
+	}
+	i = 0
+	for _, v := range PLAYERS.DEF {
+		def[i] = v
+		i++
+	}
+	sort.Sort(qb)
+	sort.Sort(rb)
+	sort.Sort(wr)
+	sort.Sort(te)
+	sort.Sort(k)
+	sort.Sort(def)
+	return PlayersSlices{QB: qb, RB: rb, WR: wr, TE: te, K: k, DEF: def}
+}
 
 // Points the turn pointer to the next team
 func nextPick() {
@@ -627,16 +704,19 @@ func lobby(w http.ResponseWriter, r *http.Request) {
 	}
 	picker := teamTeam[rlookup(teamNumber,CURPICK)]
 	turnHeader := w.Header().Get("NOTYOURTURN")
-	log.Println(turnHeader)
+	//log.Println(turnHeader) //TEMP
 	page := &Page{
 		League: TEAMS,
 		User: u,
-		Rosters: PLAYERS,
+		//Rosters: PLAYERS, //TEMP
+		Rosters: playersSlice(),
 		AllPicks: ALLPICKS,
 		Pause: pause,
 		CurrentPick: picker,
 		CurrentRound: CURROUND,
 		HelperString: turnHeader}
+	//log.Println(page.Rosters)
+	//log.Println(page.RosterSlices)
 	// FUTURE: Determine how to detect mobile phones
 	//err = TEMPLATES.ExecuteTemplate(w,"mlobby.html",page) // Fix draft board
 	err = TEMPLATES.ExecuteTemplate(w,"lobby.html",page)
@@ -679,7 +759,8 @@ func keepers(w http.ResponseWriter, r *http.Request) {
 
 	// Create User using cookie username to lookup Name and Team
 	u := User{Name: teamName[cookie.Value], Team: teamTeam[cookie.Value]}
-	page := Page{User: u, Rosters: PLAYERS}
+	//page := Page{User: u, Rosters: PLAYERS}
+	page := Page{User: u, Rosters: playersSlice()}
 	errT := TEMPLATES.ExecuteTemplate(w,"keepers.html",page)
 	if errT != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -1026,7 +1107,6 @@ func setadmin(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprintf(w, `<html>ERROR: %v <br /><a href="/admin">Back</a></html>`,err)
 			return
 		}
-		log.Println(res.Body)
 		defer res.Body.Close()
 		data := make([]byte,1e6)
 		var plist []Player

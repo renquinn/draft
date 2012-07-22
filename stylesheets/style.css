@@ -9,7 +9,8 @@ body{
 }
 
 .white-box {
-	max-width: 250px;
+	max-width: 500px;
+	width: auto;
 	margin: 50px auto;
 	padding: 20px 50px;
 }
@@ -114,4 +115,3 @@ body{
 
 .draft tr.even td{background-color:rgba(255,255,255,1.0);}
 .draft tr.odd td{background-color:rgba(230,230,230,0.9);}
-
