@@ -1,4 +1,26 @@
-// FUTURE: Add keepers to positional lists
+// TODO:
+//	BUG: Check if TEAMS is even being accessed correctly since it is zero based
+//		You might have to refactor TEAMS alltogether
+//	Force turn picking
+//	Fix cookies
+//	Prevent keepers from being selected multiple times
+//	Improve mobile site
+//	MAYBE: Only allow picks to be processed if draft has been started
+
+// BACKLOG
+//	Add chat window
+//	Display more draft info on the lobby (ordered picks, player info as a popup modal)
+//	Use status codes to your advantage (ex. forbidden status on admin page)
+//	Move the draft board to a template
+
+// 2013
+//	Use jquerymobile for the mobile site
+
+// DONE
+//	Detect mobile (Still requires testing)
+//	Finish mobile design
+//	  Use lower res background for quicker loading (Green gradient?)
+//	  Make everything taller (Width is good)
 package main
 
 import (
@@ -48,13 +70,13 @@ var CLOCK time.Time
 var PAUSE bool
 
 // Pick Management
-//teamsCH := make(chan string, 12) // The channel by which to send picks // FUTURE: Use the App Engine Channel API
 var PICKS[13][16]Player // The main draft data, each pick is stored here PICKS[NUMTEAMS+1][NUMROUNDS+1]
 var ALLPICKS []Player
 var PLAYERS Players // All players
 var TEAMS []Team
 var CURPICK int
 var CURROUND int
+var LASTPICK string
 
 // Team info
 var ADMINS = []string {"dixie","el_gor"}
@@ -122,13 +144,15 @@ var teamTeam = map[string] string {
 type Page struct {
 	User User
 	AllPicks []Player
-	//Rosters Players
+	//Rosters Players // optimized (no sorting)
 	Rosters PlayersSlices
 	League []Team
 	Pause string
 	Players Players
 	CurrentPick string
 	CurrentRound int
+	LastPick string
+	ErrorString string
 	HelperString string
 }
 
@@ -494,27 +518,39 @@ func SyncRosters(r *http.Request) (error) {
 func FindPlayer(player string, team, round int) {
 	// When replacing a player make sure you put it back into the pool
 	if _, present := PLAYERS.QB[player]; present {
-		PICKS[team][round] = PLAYERS.QB[player]
+		pick := PLAYERS.QB[player]
+		PICKS[team][round] = pick
+		TEAMS[team].QB = append(TEAMS[team].QB,pick)
 		delete(PLAYERS.QB, player)
 	}
 	if _, present := PLAYERS.RB[player]; present {
-		PICKS[team][round] = PLAYERS.RB[player]
+		pick := PLAYERS.RB[player]
+		PICKS[team][round] = pick
+		TEAMS[team].RB = append(TEAMS[team].RB,pick)
 		delete(PLAYERS.RB, player)
 	}
 	if _, present := PLAYERS.WR[player]; present {
-		PICKS[team][round] = PLAYERS.WR[player]
+		pick := PLAYERS.WR[player]
+		PICKS[team][round] = pick
+		TEAMS[team].WR = append(TEAMS[team].WR,pick)
 		delete(PLAYERS.WR, player)
 	}
 	if _, present := PLAYERS.TE[player]; present {
-		PICKS[team][round] = PLAYERS.TE[player]
+		pick := PLAYERS.TE[player]
+		PICKS[team][round] = pick
+		TEAMS[team].TE = append(TEAMS[team].TE,pick)
 		delete(PLAYERS.TE, player)
 	}
 	if _, present := PLAYERS.K[player]; present {
-		PICKS[team][round] = PLAYERS.K[player]
+		pick := PLAYERS.K[player]
+		PICKS[team][round] = pick
+		TEAMS[team].K = append(TEAMS[team].K,pick)
 		delete(PLAYERS.K, player)
 	}
 	if _, present := PLAYERS.DEF[player]; present {
-		PICKS[team][round] = PLAYERS.DEF[player]
+		pick := PLAYERS.DEF[player]
+		PICKS[team][round] = pick
+		TEAMS[team].DEF = append(TEAMS[team].DEF,pick)
 		delete(PLAYERS.DEF, player)
 	}
 }
@@ -562,7 +598,8 @@ func GetPicksList() []Player {
 
 // Test page set up for conducting various tests
 func test(w http.ResponseWriter, r *http.Request) {
-	_ = TEMPLATES.ExecuteTemplate(w,"test.html",PLAYERS)
+	page := r.UserAgent()
+	fmt.Fprint(w, page)
 }
 
 // The home page or login page
@@ -611,7 +648,7 @@ func login(w http.ResponseWriter, r *http.Request) {
 
 // Research Page
 // Search for a player and if found, display that player's recent news
-// FUTURE: Display the player's stats/information
+// TODO: Display the player's stats/information
 func research(w http.ResponseWriter, r *http.Request) {
 	player := r.FormValue("player")
 	if player != "" {
@@ -678,15 +715,17 @@ func news(w http.ResponseWriter, r *http.Request) {
 // Displays the user's picks as well as the entire league's recent picks
 // Displays each`team's picks
 // Allows user to make a pick
-// FUTURE: Check the header for a "Not your turn" code
-// FUTURE: Add a chat window (Identical to the Cuddle demo)
+// TODO: Check the header for a "Not your turn" code
+// TODO: Add a chat window (Identical to the Cuddle demo)
+// TODO: See if you can connect the current pick to the ChannelAPI and refresh the page when a new message is sent
 func lobby(w http.ResponseWriter, r *http.Request) {
 	// Get Cookie
 	cookie, err := r.Cookie("username")
 	// If doesn't exist
 	if err != nil {
 		// Redirect to index
-		http.Redirect(w, r, "/", http.StatusForbidden)
+		//http.Redirect(w, r, "/", http.StatusForbidden)
+		http.Redirect(w, r, "/", http.StatusFound)
 		return
 	}
 
@@ -696,30 +735,35 @@ func lobby(w http.ResponseWriter, r *http.Request) {
 		p[pi]=PICKS[teamNumber[cookie.Value]][pi+1]
 	}
 
+	// Prepare Page
 	// Create User using cookie username to lookup Name and Team
 	u := User{Name: teamName[cookie.Value], Team: teamTeam[cookie.Value], Picks: p, Number: teamNumber[cookie.Value]}
+	// Check if the draft is underway
 	pause := ""
 	if !PAUSE {
 		pause = "pause"
 	}
+	// Get other info
 	picker := teamTeam[rlookup(teamNumber,CURPICK)]
-	turnHeader := w.Header().Get("NOTYOURTURN")
-	//log.Println(turnHeader) //TEMP
+	turnHeader := r.Header.Get("NOTYOURTURN")
 	page := &Page{
 		League: TEAMS,
 		User: u,
-		//Rosters: PLAYERS, //TEMP
-		Rosters: playersSlice(),
+		//Rosters: PLAYERS, //TEMP (optimized, non sorted)
+		Rosters: playersSlice(), // For sorting
 		AllPicks: ALLPICKS,
 		Pause: pause,
 		CurrentPick: picker,
 		CurrentRound: CURROUND,
+		LastPick: LASTPICK,
 		HelperString: turnHeader}
-	//log.Println(page.Rosters)
-	//log.Println(page.RosterSlices)
-	// FUTURE: Determine how to detect mobile phones
-	//err = TEMPLATES.ExecuteTemplate(w,"mlobby.html",page) // Fix draft board
-	err = TEMPLATES.ExecuteTemplate(w,"lobby.html",page)
+	// Detect mobile user
+	uaHeader := r.UserAgent()
+	if strings.Contains(uaHeader,"Mobile") {
+		err = TEMPLATES.ExecuteTemplate(w,"mlobby.html",page)
+	} else {
+		err = TEMPLATES.ExecuteTemplate(w,"lobby.html",page)
+	}
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
@@ -815,7 +859,7 @@ func keepme(w http.ResponseWriter, r *http.Request) {
 
 // Handle Pick
 // Submits the draft pick and redirects the user to the lobby.
-// FUTURE: 	If the team's number is not the current pick number
+// TODO: 	If the team's number is not the current pick number
 //			redirect to the lobby with a "Not your turn" code in
 //			the header.
 func picked(w http.ResponseWriter, r *http.Request) {
@@ -884,6 +928,7 @@ func picked(w http.ResponseWriter, r *http.Request) {
 	if num < NUMROUNDS {
 		PICKS[team][num+1] = pick
 	}
+	LASTPICK = teamName[cookie.Value] + " - " + pick.Name + ", " + pick.Team
 	// Reset Cookie?
 	//http.SetCookie(w, &cookie)
 	// Redirect to the lobby
@@ -900,8 +945,8 @@ func timer(w http.ResponseWriter, r *http.Request) {
 
 // Draft Board Page
 // Here the user can see all of the draft picks.
-// FUTURE: Use the App Engine Channel API
-// FUTURE: Use a template
+// TODO: Use a template
+// TODO: Use the App Engine Channel API
 func draft(w http.ResponseWriter, r *http.Request) {
 	// Generate HTML for the draft table
 	page := `
@@ -1023,7 +1068,7 @@ func setadmin(w http.ResponseWriter, r *http.Request) {
 			for j:=0;j<NUMROUNDS;j++ {
 				PICKS[i][j] = p
 			}
-			// FUTURE: Make sure EVERYTHING is cleared.
+			// TODO: Make sure EVERYTHING is cleared.
 			// I'm not sure if this works yet
 			TEAMS[i].QB = TEAMS[i].QB[:0]
 			TEAMS[i].RB = TEAMS[i].RB[:0]
@@ -1036,57 +1081,56 @@ func setadmin(w http.ResponseWriter, r *http.Request) {
 	} else if adminfunction == "override" {
 		// Override Pick
 		// Get form values
-		team := r.FormValue("team")
+		team := teamNumber[r.FormValue("team")]
 		round,_ := strconv.Atoi(r.FormValue("round"))
 		player := r.FormValue("player")
 		// Put the previous pick back in the pool
-		oldpick := PICKS[teamNumber[team]][round]
-		oldpos := oldpick.Position
+		oldpick := PICKS[team][round]
 		oldid := oldpick.PlayerID
-		if oldpos == "QB" {
-			PLAYERS.QB[oldid] = oldpick
-		}
-		if oldpos == "RB" {
-			PLAYERS.RB[oldid] = oldpick
-		}
-		if oldpos == "WR" {
-			PLAYERS.WR[oldid] = oldpick
-		}
-		if oldpos == "TE" {
-			PLAYERS.TE[oldid] = oldpick
-		}
-		if oldpos == "K" {
-			PLAYERS.K[oldid] = oldpick
-		}
-		if oldpos == "DEF" {
-			PLAYERS.DEF[oldid] = oldpick
-		}
 
 		// Override draft pick
-		// FUTURE: 	In addition to adding the pick to PICKS,
+		// TODO: 	In addition to adding the pick to PICKS,
 		//			add it to the teams positional list
 		if _, present := PLAYERS.QB[player]; present {
-			PICKS[teamNumber[team]][round] = PLAYERS.QB[player]
+			PLAYERS.QB[oldid] = oldpick
+			pick := PLAYERS.QB[player]
+			TEAMS[team].QB = append(TEAMS[team].QB,pick)
+			PICKS[team][round] = pick
 			delete(PLAYERS.QB, player)
 		}
 		if _, present := PLAYERS.RB[player]; present {
-			PICKS[teamNumber[team]][round] = PLAYERS.RB[player]
+			PLAYERS.RB[oldid] = oldpick
+			pick := PLAYERS.RB[player]
+			TEAMS[team].RB = append(TEAMS[team].RB,pick)
+			PICKS[team][round] = pick
 			delete(PLAYERS.RB, player)
 		}
 		if _, present := PLAYERS.WR[player]; present {
-			PICKS[teamNumber[team]][round] = PLAYERS.WR[player]
+			PLAYERS.WR[oldid] = oldpick
+			pick := PLAYERS.WR[player]
+			TEAMS[team].WR = append(TEAMS[team].WR,pick)
+			PICKS[team][round] = pick
 			delete(PLAYERS.WR, player)
 		}
 		if _, present := PLAYERS.TE[player]; present {
-			PICKS[teamNumber[team]][round] = PLAYERS.TE[player]
+			PLAYERS.TE[oldid] = oldpick
+			pick := PLAYERS.TE[player]
+			TEAMS[team].TE = append(TEAMS[team].TE,pick)
+			PICKS[team][round] = pick
 			delete(PLAYERS.TE, player)
 		}
 		if _, present := PLAYERS.K[player]; present {
-			PICKS[teamNumber[team]][round] = PLAYERS.K[player]
+			PLAYERS.K[oldid] = oldpick
+			pick := PLAYERS.K[player]
+			TEAMS[team].K = append(TEAMS[team].K,pick)
+			PICKS[team][round] = pick
 			delete(PLAYERS.K, player)
 		}
 		if _, present := PLAYERS.DEF[player]; present {
-			PICKS[teamNumber[team]][round] = PLAYERS.DEF[player]
+			PLAYERS.DEF[oldid] = oldpick
+			pick := PLAYERS.DEF[player]
+			TEAMS[team].DEF = append(TEAMS[team].DEF,pick)
+			PICKS[team][round] = pick
 			delete(PLAYERS.DEF, player)
 		}
 		ALLPICKS = append(ALLPICKS, PLAYERS.ALL[player])
@@ -1137,6 +1181,7 @@ func init() {
 	PAUSE = true
 	CURPICK = 1
 	CURROUND = 1
+	LASTPICK = "--"
 
 	for i:=1;i<=NUMTEAMS;i++ {
 		t := rlookup(teamNumber,i)

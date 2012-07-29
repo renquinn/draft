@@ -1,0 +1,37 @@
+<!-- TODO: Connect template to source by correcting variable names -->
+<html>
+
+<head>
+	{{template "head.html" .Pause}}
+</head>
+
+<body>
+	{{template "navbar.html"}}
+
+	<table class="draft" table-layout="fixed">
+		<tr>
+			<td>
+				<table>
+					<tr><th></th></tr>
+					{{ range $round := .NUMTEAMS }}
+					<tr><td>{{$round}}</td></tr>
+					{{ end }}
+				</table>
+			</td>
+			{{ range $team := .TEAMS }}
+			<td>
+				<table>
+					<tr><th>{{$team.Name}}</th></tr>
+					{{ range $pick := $team.Picks }}
+					<tr><td>{{$pick.Name}} {{$pick.Team}}</td></tr>
+					{{ end }}
+				</table>
+			</td>
+			{{ end }}
+		</tr>
+	</table>
+
+	{{template "footer.html"}}
+</body>
+
+</html>

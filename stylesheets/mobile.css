@@ -1,21 +1,23 @@
 body{
-	background-image:url('../images/bg.jpg');
-	background-repeat: no-repeat;
-	background-attachment: fixed;
-	background-size: 120% 100%;
+	background: #3f7120;
+	background: -webkit-gradient(radial, center center, 0, center center, 200, from(#fff), to(#3f7120));
+	background: -webkit-gradient(linear, right bottom, left top, from(#3f7120), to(#f2ebc1));
 	font-family: "medium";
 	padding-top: 80px;
 	overflow-x: hidden;
-	width: 100%;
+	width: auto;
 	padding: 0;
 	margin: 0;
+}
+
+.filler {
+	margin-top: 220px;
 }
 
 .box {
 	background: -webkit-gradient(linear, right bottom, right top, from(#000), to(#666));
 	color:#fff;
 	padding:10px;
-	border-radius: 5px;
 	box-shadow: 10px 10px 25px #000000;
 	font-family: "bold";
 	font-size:15px;
@@ -86,35 +88,35 @@ body{
  */
 
 .navbar {
-	background-color: #000;
-	overflow: visible;
-	height: 60px;
+	height: 100px;
 	width: 100%;
 	border-bottom:1px solid #000;
 	-webkit-box-shadow: 0px 0px 15px 0px #333;
+	overflow: visible;
+	background-color: #000;
 }
 
-.navbar2 {
-	background-color: #000;
-	overflow: visible;
-	height: 60px;
-	width: 100%;
-	border-bottom:1px solid #000;
-	-webkit-box-shadow: 0px 0px 15px 0px #333;
+#navbar1 {
+	position: fixed;
+	top: 0px;
+}
+
+
+#navbar2 {
+	position: fixed;
+	top: 100px;
 }
 
 .navbar-inner {
 	width: 85%;
 	margin: 0px auto;
-	display: table;
-	padding-right: 10px;
 }
 
 .brand {
-	margin-top: 2px;
+	margin-top: 15px;
 	padding: 0px;
-	width: 40%;
-	height: 55px;
+	width: 150px;
+	height: 63px;
 	float: left;
 	display: inline;
 }
@@ -126,26 +128,25 @@ body{
 
 #timer {
 	display: inline;
-	padding: 3px 15px 0 0;
 	font-family: "scoreboard";
 	font-size:40px;
 	color:#f5d70c;
 	width: 40%; 
 	height: auto;
 	float: right;
-	line-height: 58px;
+	line-height: 100px;
 }
 
 .nav {
 	position: relative;
 	padding:0;
 	margin: 10px auto 0;
-	font-size: 20px;
+	font-size: 40px;
 	font-family: "scoreboard";
 	list-style-type:none;
 	line-height: 58px;
 	background: #000;
-	width: 200px;
+	width: 300px;
 	-webkit-border-radius: 15px;
 	z-index: 1000;
 }
@@ -166,6 +167,21 @@ body{
 }
 
 .dropdown {
+	font-size: 35px;
 	text-decoration: none;
 	margin: 0px auto;
+	line-height: 50px;
+}
+
+#teams {
+	background: #fff;
+	padding: 20px;
+	margin: 20px;
+	border: 1px solid #000;
+	box-shadow: 10px 10px 25px #000000;
+}
+
+select {
+	width: 75%;
+	padding: 20px;
 }

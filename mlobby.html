@@ -3,6 +3,7 @@
 <head>
 	<title>STG Football</title>
 	<link rel="stylesheet" type="text/css" href="stylesheets/mobile.css" />
+	<link rel="stylesheet" type="text/css" href="stylesheets/lobby.css" />
 	{{ if .Pause }}
 	<script type="text/javascript" src="javascripts/timer.js"></script>
 	{{ end }}
@@ -10,6 +11,27 @@
 
 <body>
 	{{template "mnavbar.html"}}
+
+	<br />
+	<br />
+	<div class="filler"></div>
+	<div class="info">
+		<table>
+			<tr>
+				<th>Current Pick</th>
+				<th>{{.CurrentPick}}</th>
+			</tr>
+			<tr>
+				<th>Round</th>
+				<th>{{.CurrentRound}}</th>
+			</tr>
+			<tr>
+				<th>Last Pick</th>
+				<th>{{.LastPick}}</th>
+			</tr>
+		</table>
+	</div>
+
 	<div class="box" id="makepick">
 			<br />
 		<form action="/picked" method="POST">
@@ -60,11 +82,106 @@
 			<input class="button" type="submit" value="Make Pick!">
 			</center>
 		</form>
-		<!--<script type="text/javascript" src="http://api.fantasyfootballnerd.com/ffnRankingsJS.php?apiKey=2012050338875903"></script>-->
 	</div>
+	<!--<script type="text/javascript" src="http://api.fantasyfootballnerd.com/ffnRankingsJS.php?apiKey=2012050338875903"></script>-->
+	<br />
+
+	<div id="teams">
+	<center>
+	<span id="teamnumber" style="display: none;">{{.User.Number}}</span>
+	<select id="teams" name="teams">
+		<option value=nil>Select Team</option>
+		{{range $t := .League}}
+		<option value="#{{$t.TabID}}">{{$t.Name}}</option>
+		{{end}}
+	</select>
+	</center>
+
+	{{range $t := .League}}
+	<div id="{{$t.TabID}}">
+		<h2>{{$t.Name}}</h2>
+					<table>
+						<tr>
+							<th>
+							QBs
+							</th>
+						</tr>
+					{{range $p := $t.QB}}
+						<tr>
+							<td>{{$p.Name}} {{$p.Team}}
+						</tr>
+					{{end}}
+					</table>
+					<table>
+						<tr>
+							<th>
+							RBs
+							</th>
+						</tr>
+					{{range $p := $t.RB}}
+						<tr>
+							<td>{{$p.Name}} {{$p.Team}}
+						</tr>
+					{{end}}
+					</table>
+					<table>
+						<tr>
+							<th>
+							WRs
+							</th>
+						</tr>
+					{{range $p := $t.WR}}
+						<tr>
+							<td>{{$p.Name}} {{$p.Team}}
+						</tr>
+					{{end}}
+					</table>
+					<table>
+						<tr>
+							<th>
+							TEs
+							</th>
+						</tr>
+					{{range $p := $t.TE}}
+						<tr>
+							<td>{{$p.Name}} {{$p.Team}}
+						</tr>
+					{{end}}
+					</table>
+					<table>
+						<tr>
+							<th>
+							Ks
+							</th>
+						</tr>
+					{{range $p := $t.K}}
+						<tr>
+							<td>{{$p.Name}} {{$p.Team}}
+						</tr>
+					{{end}}
+					</table>
+					<table>
+						<tr>
+							<th>
+							DEFs
+							</th>
+						</tr>
+					{{range $p := $t.DEF}}
+						<tr>
+							<td>{{$p.Name}} {{$p.Team}}
+						</tr>
+					{{end}}
+					</table>
+		</div>
+		{{end}}
+	</div>
+
+	<br />
+
 
 	{{template "footer.html"}}
 	<script type="text/javascript" src="javascripts/mobile.js"></script>
+	<script type="text/javascript" src="javascripts/mtabs.js"></script>
 </body>
 
 </html>
