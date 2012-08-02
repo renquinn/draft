@@ -70,10 +70,38 @@
 					<td>Player Name</td>
 					<td>
 					<select name="player">
-						{{range $q := .Players.ALL}}
-						<option value="{{$q.PlayerID}}">{{$q.Position}} {{$q.Name}} {{$q.Team}}</option>
-						{{end}}
+						<optgroup label="QBs">
+							{{range $q := .Rosters.QB }}
+							<option value="{{$q.PlayerID}}">{{$q.Name}}, {{$q.Team}}</option>
+							{{end}}
+						</optgroup>
+						<optgroup label="RBs">
+							{{range $q := .Rosters.RB }}
+							<option value="{{$q.PlayerID}}">{{$q.Name}}, {{$q.Team}}</option>
+							{{end}}
+						</optgroup>
+						<optgroup label="WRs">
+							{{range $q := .Rosters.WR }}
+							<option value="{{$q.PlayerID}}">{{$q.Name}}, {{$q.Team}}</option>
+							{{end}}
+						</optgroup>
+						<optgroup label="TEs">
+							{{range $q := .Rosters.TE }}
+							<option value="{{$q.PlayerID}}">{{$q.Name}}, {{$q.Team}}</option>
+							{{end}}
+						</optgroup>
+						<optgroup label="Ks">
+							{{range $q := .Rosters.K }}
+							<option value="{{$q.PlayerID}}">{{$q.Name}}, {{$q.Team}}</option>
+							{{end}}
+						</optgroup>
+						<optgroup label="DEFs">
+							{{range $q := .Rosters.DEF }}
+							<option value="{{$q.PlayerID}}">{{$q.Name}}, {{$q.Team}}</option>
+							{{end}}
+						</optgroup>
 					</select>
+
 					</td>
 						
 				</tr>

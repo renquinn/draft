@@ -1,6 +1,4 @@
 // TODO:
-//	BUG: Check if TEAMS is even being accessed correctly since it is zero based
-//		You might have to refactor TEAMS alltogether
 //	Force turn picking
 //	Fix cookies
 //	Prevent keepers from being selected multiple times
@@ -8,6 +6,7 @@
 //	MAYBE: Only allow picks to be processed if draft has been started
 
 // BACKLOG
+//	Save a draft and look at previous drafts
 //	Add chat window
 //	Display more draft info on the lobby (ordered picks, player info as a popup modal)
 //	Use status codes to your advantage (ex. forbidden status on admin page)
@@ -288,6 +287,19 @@ type Athletes struct {
 // Helpers 
 // ===============================
 
+func replace(players []Player, oldid string, player Player) []Player {
+	for i, p := range players {
+		fmt.Println(i," Player ",p.PlayerID)
+		fmt.Println(player.PlayerID)
+		if p.PlayerID == oldid {
+			fmt.Println("REPLACED")
+			players[i] = player
+			return players
+		}
+	}
+	return players
+}
+
 func playersSlice() PlayersSlices {
 	qb := make(PlayersSlice, len(PLAYERS.QB))
 	rb := make(PlayersSlice, len(PLAYERS.RB))
@@ -515,44 +527,74 @@ func SyncRosters(r *http.Request) (error) {
 }
 
 // Serves a pick and removes the picked player from the instance
-func FindPlayer(player string, team, round int) {
-	// When replacing a player make sure you put it back into the pool
+func FindPlayer(player string, team, round int, oldpick Player, oldid string) {
+	fmt.Println("=======================")
+	fmt.Println(oldpick, oldid)
+	fmt.Println("=======================")
+	team--;
+	var pick Player
 	if _, present := PLAYERS.QB[player]; present {
-		pick := PLAYERS.QB[player]
-		PICKS[team][round] = pick
-		TEAMS[team].QB = append(TEAMS[team].QB,pick)
-		delete(PLAYERS.QB, player)
+		pick = PLAYERS.QB[player]
+		if oldid == "0" {
+			TEAMS[team].QB = append(TEAMS[team].QB,pick)
+			delete(PLAYERS.QB, player)
+		} else {
+			TEAMS[team].QB = replace(TEAMS[team].QB, oldid, pick)
+			PLAYERS.QB[oldpick.PlayerID] = oldpick
+		}
 	}
 	if _, present := PLAYERS.RB[player]; present {
-		pick := PLAYERS.RB[player]
-		PICKS[team][round] = pick
-		TEAMS[team].RB = append(TEAMS[team].RB,pick)
-		delete(PLAYERS.RB, player)
+		pick = PLAYERS.RB[player]
+		if oldid == "0" {
+			TEAMS[team].RB = append(TEAMS[team].RB,pick)
+			delete(PLAYERS.RB, player)
+		} else {
+			TEAMS[team].RB = replace(TEAMS[team].RB, oldid, pick)
+			PLAYERS.RB[oldpick.PlayerID] = oldpick
+		}
 	}
 	if _, present := PLAYERS.WR[player]; present {
-		pick := PLAYERS.WR[player]
-		PICKS[team][round] = pick
-		TEAMS[team].WR = append(TEAMS[team].WR,pick)
-		delete(PLAYERS.WR, player)
+		pick = PLAYERS.WR[player]
+		if oldid == "0" {
+			TEAMS[team].WR = append(TEAMS[team].WR,pick)
+			delete(PLAYERS.WR, player)
+		} else {
+			TEAMS[team].WR = replace(TEAMS[team].WR, oldid, pick)
+			PLAYERS.WR[oldpick.PlayerID] = oldpick
+		}
 	}
 	if _, present := PLAYERS.TE[player]; present {
-		pick := PLAYERS.TE[player]
-		PICKS[team][round] = pick
-		TEAMS[team].TE = append(TEAMS[team].TE,pick)
-		delete(PLAYERS.TE, player)
+		pick = PLAYERS.TE[player]
+		if oldid == "0" {
+			TEAMS[team].TE = append(TEAMS[team].TE,pick)
+			delete(PLAYERS.TE, player)
+		} else {
+			TEAMS[team].TE = replace(TEAMS[team].TE, oldid, pick)
+			PLAYERS.TE[oldpick.PlayerID] = oldpick
+		}
 	}
 	if _, present := PLAYERS.K[player]; present {
-		pick := PLAYERS.K[player]
-		PICKS[team][round] = pick
-		TEAMS[team].K = append(TEAMS[team].K,pick)
-		delete(PLAYERS.K, player)
+		pick = PLAYERS.K[player]
+		if oldid == "0" {
+			TEAMS[team].K = append(TEAMS[team].K,pick)
+			delete(PLAYERS.K, player)
+		} else {
+			TEAMS[team].K = replace(TEAMS[team].K, oldid, pick)
+			PLAYERS.K[oldpick.PlayerID] = oldpick
+		}
 	}
 	if _, present := PLAYERS.DEF[player]; present {
-		pick := PLAYERS.DEF[player]
-		PICKS[team][round] = pick
-		TEAMS[team].DEF = append(TEAMS[team].DEF,pick)
-		delete(PLAYERS.DEF, player)
+		pick = PLAYERS.DEF[player]
+		if oldid == "0" {
+			TEAMS[team].DEF = append(TEAMS[team].DEF,pick)
+			delete(PLAYERS.DEF, player)
+		} else {
+			TEAMS[team].DEF = replace(TEAMS[team].DEF, oldid, pick)
+			PLAYERS.DEF[oldpick.PlayerID] = oldpick
+		}
 	}
+	team++;
+	PICKS[team][round] = pick
 }
 
 // Combine all the postional rosters into one big roster list
@@ -841,11 +883,11 @@ func keepme(w http.ResponseWriter, r *http.Request) {
 	// Use the cookie's value to lookup the teamNumber
 	team := teamNumber[cookie.Value]
 	// Add keepers
-	FindPlayer(k1, team, r1)
+	FindPlayer(k1, team, r1, Player{PlayerID: "0"}, "0")
 	if num > 1 {
-		FindPlayer(k2, team, r2)
+		FindPlayer(k2, team, r2, Player{PlayerID: "0"}, "0")
 		if num > 2 {
-			FindPlayer(k3, team, r3)
+			FindPlayer(k3, team, r3, Player{PlayerID: "0"}, "0")
 		}
 	}
 	/*
@@ -885,6 +927,7 @@ func picked(w http.ResponseWriter, r *http.Request) {
 	player := r.FormValue("player")
 	position := r.FormValue("position")
 
+	// TODO: Use the FindPlayer function instead
 	var pick Player
 	team--; // Because TEAMS is 0 based
 	if position == "qb" {
@@ -928,7 +971,7 @@ func picked(w http.ResponseWriter, r *http.Request) {
 	if num < NUMROUNDS {
 		PICKS[team][num+1] = pick
 	}
-	LASTPICK = teamName[cookie.Value] + " - " + pick.Name + ", " + pick.Team
+	LASTPICK = teamTeam[cookie.Value] + " - " + pick.Name + ", " + pick.Team
 	// Reset Cookie?
 	//http.SetCookie(w, &cookie)
 	// Redirect to the lobby
@@ -1005,6 +1048,8 @@ func draft(w http.ResponseWriter, r *http.Request) {
 				page += "</td>\n"
 			} else {
 				page += "			<td>"
+				page += PICKS[j][i].Position // Each pick
+				page += " "
 				page += PICKS[j][i].Name // Each pick
 				page += " "
 				page += PICKS[j][i].Team // Each pick
@@ -1044,7 +1089,8 @@ func admin(w http.ResponseWriter, r *http.Request) {
 	if !PAUSE {
 		pause = "pause"
 	}
-	page := Page{Pause: pause, Players: PLAYERS}
+	//page := Page{Pause: pause, Players: PLAYERS}
+	page := Page{Pause: pause, Rosters: playersSlice()}
 	errT := TEMPLATES.ExecuteTemplate(w,"admin.html",page)
 	if errT != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -1089,8 +1135,8 @@ func setadmin(w http.ResponseWriter, r *http.Request) {
 		oldid := oldpick.PlayerID
 
 		// Override draft pick
-		// TODO: 	In addition to adding the pick to PICKS,
-		//			add it to the teams positional list
+		FindPlayer(player, team, round, oldpick, oldid)
+		/* Replaced by the FindPlayer function on 8/1/12
 		if _, present := PLAYERS.QB[player]; present {
 			PLAYERS.QB[oldid] = oldpick
 			pick := PLAYERS.QB[player]
@@ -1133,6 +1179,7 @@ func setadmin(w http.ResponseWriter, r *http.Request) {
 			PICKS[team][round] = pick
 			delete(PLAYERS.DEF, player)
 		}
+		*/
 		ALLPICKS = append(ALLPICKS, PLAYERS.ALL[player])
 	} else if adminfunction == "start" {
 		// Start Clock
