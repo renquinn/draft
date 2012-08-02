@@ -1,20 +1,21 @@
 // TODO:
-//	Force turn picking
+//	Improve mobile site
+//	BUG: Styling on team tabs overflows
 //	Fix cookies
 //	Prevent keepers from being selected multiple times
-//	Improve mobile site
 //	MAYBE: Only allow picks to be processed if draft has been started
-
+//	MAYBE: Reset the draft info on draft start
+//
 // BACKLOG
 //	Save a draft and look at previous drafts
 //	Add chat window
 //	Display more draft info on the lobby (ordered picks, player info as a popup modal)
 //	Use status codes to your advantage (ex. forbidden status on admin page)
 //	Move the draft board to a template
-
+//
 // 2013
 //	Use jquerymobile for the mobile site
-
+//
 // DONE
 //	Detect mobile (Still requires testing)
 //	Finish mobile design
@@ -289,10 +290,7 @@ type Athletes struct {
 
 func replace(players []Player, oldid string, player Player) []Player {
 	for i, p := range players {
-		fmt.Println(i," Player ",p.PlayerID)
-		fmt.Println(player.PlayerID)
 		if p.PlayerID == oldid {
-			fmt.Println("REPLACED")
 			players[i] = player
 			return players
 		}
@@ -365,6 +363,7 @@ func nextPick() {
 		}
 	}
 }
+
 // Returns a User struct from the datastore
 func getUser(c appengine.Context, username string) (*User, error) {
 	u := &User{Username: username}
@@ -528,9 +527,6 @@ func SyncRosters(r *http.Request) (error) {
 
 // Serves a pick and removes the picked player from the instance
 func FindPlayer(player string, team, round int, oldpick Player, oldid string) {
-	fmt.Println("=======================")
-	fmt.Println(oldpick, oldid)
-	fmt.Println("=======================")
 	team--;
 	var pick Player
 	if _, present := PLAYERS.QB[player]; present {
@@ -595,6 +591,7 @@ func FindPlayer(player string, team, round int, oldpick Player, oldid string) {
 	}
 	team++;
 	PICKS[team][round] = pick
+	LASTPICK = teamTeam[rlookup(teamNumber,team)] + " - " + pick.Name + ", " + pick.Team
 }
 
 // Combine all the postional rosters into one big roster list
@@ -925,9 +922,20 @@ func picked(w http.ResponseWriter, r *http.Request) {
 	}
 	// Retrieve the form values
 	player := r.FormValue("player")
-	position := r.FormValue("position")
+	//position := r.FormValue("position")
 
-	// TODO: Use the FindPlayer function instead
+	// Count how many picks you have made
+	num := 0
+	for i:=0;i<NUMROUNDS;i++ {
+		if PICKS[team][i+1].Name != "" {
+			num++
+		} else {
+			break
+		}
+	}
+
+	FindPlayer(player, team, num+1, Player{PlayerID: "0"}, "0")
+/* Update to findplayer on 8/1/12
 	var pick Player
 	team--; // Because TEAMS is 0 based
 	if position == "qb" {
@@ -955,23 +963,17 @@ func picked(w http.ResponseWriter, r *http.Request) {
 		TEAMS[team].DEF = append(TEAMS[team].DEF,pick)
 		delete(PLAYERS.DEF, player)
 	}
-	ALLPICKS = append(ALLPICKS, pick)
 	team++; // Because TEAMS is 0 based
-
-	// Count how many picks you have made
-	num := 0
-	for i:=0;i<NUMROUNDS;i++ {
-		if PICKS[team][i+1].Name != "" {
-			num++
-		} else {
-			break
-		}
-	}
 	// Append next pick
 	if num < NUMROUNDS {
 		PICKS[team][num+1] = pick
 	}
-	LASTPICK = teamTeam[cookie.Value] + " - " + pick.Name + ", " + pick.Team
+	*/
+
+	//ALLPICKS = append(ALLPICKS, pick)
+	if !PAUSE {
+		nextPick()
+	}
 	// Reset Cookie?
 	//http.SetCookie(w, &cookie)
 	// Redirect to the lobby
@@ -991,7 +993,6 @@ func timer(w http.ResponseWriter, r *http.Request) {
 // TODO: Use a template
 // TODO: Use the App Engine Channel API
 func draft(w http.ResponseWriter, r *http.Request) {
-	// Generate HTML for the draft table
 	page := `
 <html>
 <head>
@@ -1080,7 +1081,7 @@ func admin(w http.ResponseWriter, r *http.Request) {
 	}
 	// Check admin permissions
 	if cookie.Value != ADMINS[0] && cookie.Value != ADMINS[1] {
-		http.Redirect(w, r, "/lobby", http.StatusForbidden)
+		http.Redirect(w, r, "/lobby", http.StatusFound)
 		return
 	}
 
@@ -1182,6 +1183,7 @@ func setadmin(w http.ResponseWriter, r *http.Request) {
 		*/
 		ALLPICKS = append(ALLPICKS, PLAYERS.ALL[player])
 	} else if adminfunction == "start" {
+		// TODO: Reset the draft as well
 		// Start Clock
 		PAUSE = false
 		CLOCK = time.Now()
