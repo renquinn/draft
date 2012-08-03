@@ -31,6 +31,11 @@
 	padding-right: 5px;
 }
 
+#tabs1>.ui-tabs-nav li:hover {
+	background: #f5d70c;
+	border-bottom: 1px solid #f5d70c;
+}
+
 #tabs1>.ui-tabs-nav a {
 	text-decoration: none;
 	padding: 5px 15px;

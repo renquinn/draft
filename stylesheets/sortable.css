@@ -8,6 +8,7 @@
 	height: 350px;
 	border: 1px solid #000;
 	overflow: auto;
+	box-shadow: inset 0px 5px 15px #000;
 }
 
 .sortable li {
@@ -22,7 +23,7 @@
 
 .player {
 	border: 1px solid #000;
-	background: rgba(20,20,20,.5);
+	background: rgba(0,0,0,.8);
 }
 
 .ui-state-highlight {
