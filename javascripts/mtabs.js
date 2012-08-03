@@ -11,7 +11,7 @@ $(function() {
 			var hiddenTeam = $(this).val();
 			$(hiddenTeam).css("display", "none");
 		});
-		var team = $('#teams').val();
+		var team = $('#teams select').val();
 		$(team).css("display", "block");
 	});
 });

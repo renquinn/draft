@@ -15,6 +15,7 @@
 //
 // 2013
 //	Use jquerymobile for the mobile site
+//  Switch to Rails?
 //
 // DONE
 //	Detect mobile (Still requires testing)

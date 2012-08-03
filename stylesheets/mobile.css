@@ -6,6 +6,7 @@ body{
 	padding-top: 80px;
 	overflow-x: hidden;
 	width: auto;
+	max-width: 640px;
 	padding: 0;
 	margin: 0;
 }
@@ -90,6 +91,7 @@ body{
 .navbar {
 	height: 100px;
 	width: 100%;
+	max-width: 640px;
 	border-bottom:1px solid #000;
 	-webkit-box-shadow: 0px 0px 15px 0px #333;
 	overflow: visible;
@@ -109,7 +111,7 @@ body{
 
 .navbar-inner {
 	width: 85%;
-	margin: 0px auto;
+	margin: 0px 45px;
 }
 
 .brand {
@@ -131,7 +133,6 @@ body{
 	font-family: "scoreboard";
 	font-size:40px;
 	color:#f5d70c;
-	width: 40%; 
 	height: auto;
 	float: right;
 	line-height: 100px;
@@ -184,4 +185,11 @@ body{
 select {
 	width: 75%;
 	padding: 20px;
+	height: 100px;
+	margin: 10px;
+	font-size: 30px;
+}
+
+.info th {
+	font-size: 30px;
 }
