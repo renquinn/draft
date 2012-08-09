@@ -1,0 +1,33 @@
+.container {
+	height: aut%o;
+	width: 60%;
+	background: #000;
+	margin: 50px auto 75px;
+	padding: 25px;
+	color: #fff;
+}
+
+h1 {
+	background: #f5d70c;
+	color: #000;
+	margin-left: -25px;
+	padding-left: 10px;
+}
+
+h3 {
+	color: #f5d70c;
+}
+
+ul {
+	list-style-type: none;
+}
+
+.questions a, .questions a:visited, .questions a:active {
+	color: #f00;
+	text-decoration: none;
+}
+
+.anchor {
+	position: relative;
+	top: -75px;
+}

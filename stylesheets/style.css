@@ -115,3 +115,35 @@ body{
 
 .draft tr.even td{background-color:rgba(255,255,255,1.0);}
 .draft tr.odd td{background-color:rgba(230,230,230,0.9);}
+
+.footer {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	height: 40px;
+	width: 100%;
+	background: #000;
+	color: #fff;
+}
+
+.footer-chat {
+	float: left;
+	margin: 10px 0 0 10px;
+	display: inline;
+}
+
+.footer-links {
+	float: right;
+	display: inline;
+	margin: 10px 10px 0 0;
+	color: #fff;
+}
+
+.footer-links a, .footer-links a:visited {
+	text-decoration: none;
+	color: #fff;
+}
+
+.footer-links a:hover {
+	color: #f5d70c;
+}

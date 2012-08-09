@@ -1,0 +1,47 @@
+
+<html>
+
+<head>
+	{{template "head.html" .Pause}}
+	<link rel="stylesheet" type="text/css" href="stylesheets/help.css" />
+</head>
+
+<body>
+	{{template "navbar.html"}}
+
+	<div class="container">
+		<h1>Frequently Asked Questions</h1>
+
+		<ul class="questions">
+		<li><a href="#1">Why is the timer stuck at 00:00:00?</a></li>
+		<li><a href="#2">How do we keep people from drafting out of turn?</a></li>
+		<li><a href="#3">Where are all the players?</a></li>
+		<li><a href="#4">Who are the administrators?</a></li>
+		<li><a href="#5">How do I make a pick?</a></li>
+		</ul>
+		
+		<a class="anchor" name="1"><h3>Why is the timer stuck at 00:00:00?</h3></a>
+		<p>The timer's sole purpose is for counting how long the draft has been in progress.  So when an administrator begins the draft, the timer will commence counting.</p>
+		<br />
+		<a class="anchor" name="2">
+		<h3>How do we keep people from drafting out of turn?</h3></a>
+		<p>The turn control is a feature set by and administrator when he starts the draft.</p>
+		<br />
+		<a class="anchor" name="3">
+		<h3>Where are all the players?</h3></a>
+		<p>When a new instance of the web app is deployed, the players aren't loaded up.  You will need to contact an administrator to have them sync all the players from the server</p>
+		<br />
+		<a class="anchor" name="4">
+		<h3>Who are the administrators?</h3></a>
+		<p>Skyler, the league commissioner, and Ren, the site creator.</p>
+		<br />
+		<a class="anchor" name="5">
+		<h3>How do I make a pick?</h3></a>
+		<p>Find the player you want by first selecting a position tab, then scroll through the list on the left.  The players are sorted by last name alphabetically.  When you find the player you want, click on the corresponding box and drag it to the list on the right (your team).</p>
+		<br />
+	</div>
+
+	{{template "footer.html"}}
+</body>
+
+</html>

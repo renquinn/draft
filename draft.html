@@ -13,17 +13,17 @@
 			<td>
 				<table>
 					<tr><th></th></tr>
-					{{ range $round := .NUMTEAMS }}
+					{{ range $round := .Rounds }}
 					<tr><td>{{$round}}</td></tr>
 					{{ end }}
 				</table>
 			</td>
-			{{ range $team := .TEAMS }}
+			{{ range $team := .League }}
 			<td>
 				<table>
 					<tr><th>{{$team.Name}}</th></tr>
 					{{ range $pick := $team.Picks }}
-					<tr><td>{{$pick.Name}} {{$pick.Team}}</td></tr>
+					<tr><td>{{$pick.Position}} {{$pick.Name}} {{$pick.Team}}</td></tr>
 					{{ end }}
 				</table>
 			</td>

@@ -1,27 +1,29 @@
 // TODO:
+//	BUG: Fix the chat room
+//			You will have to cache the convo and save it in the datastore
+//			Implement the quick chat
+//	Add a help page (with a faq) and an about page (with a goals section)
 //	Improve mobile site
+//	Prevent keepers from being selected multiple times
 //	BUG: Styling on team tabs overflows
 //	Fix cookies
-//	Prevent keepers from being selected multiple times
 //	MAYBE: Only allow picks to be processed if draft has been started
 //	MAYBE: Reset the draft info on draft start
 //
 // BACKLOG
 //	Save a draft and look at previous drafts
-//	Add chat window
 //	Display more draft info on the lobby (ordered picks, player info as a popup modal)
 //	Use status codes to your advantage (ex. forbidden status on admin page)
 //	Move the draft board to a template
 //
 // 2013
+//	Using ESPN's api, create a map[playername][playerid]
+//		and have a function lookup the playerid for everyplayer and add it to it
+//		Then when a user clicks on a player's name, it will open up a modal displaying the
+//		mobile site player profile of that player
 //	Use jquerymobile for the mobile site
 //  Switch to Rails?
-//
-// DONE
-//	Detect mobile (Still requires testing)
-//	Finish mobile design
-//	  Use lower res background for quicker loading (Green gradient?)
-//	  Make everything taller (Width is good)
+//	Implement google hangouts
 package main
 
 import (
@@ -38,6 +40,7 @@ import (
 	"appengine"
 	"appengine/urlfetch"
 	"appengine/datastore"
+	"appengine/channel"
 
 	"encoding/xml"
 	"encoding/json"
@@ -51,18 +54,21 @@ import (
 // Server Management
 // The list of templates to use
 var TEMPLATES = template.Must(template.ParseFiles(
-				"index.html",
-				"head.html",
-				"navbar.html",
-				"mnavbar.html",
-				"footer.html",
-				"lobby.html",
-				"mlobby.html",
-				"keepers.html",
 				"admin.html",
-				"test.html",
+				"chat.html",
+				"footer.html",
+				"head.html",
+				"help.html",
+				"index.html",
+				"keepers.html",
+				"lobby.html",
+				"mindex.html",
+				"mlobby.html",
+				"mnavbar.html",
+				"navbar.html",
 				"news.html",
-				"research.html"))
+				"research.html",
+				"test.html"))
 
 // Default draft info (for now)
 var NUMROUNDS int
@@ -139,6 +145,8 @@ var teamTeam = map[string] string {
 	"ukrai": "Ukraine",
 }
 
+var teamUsername = []string {"dixie","b_ez_on", "up_n_at", "i_am_ba", "rob_do", "bhers", "el_gor", "nativ", "p_town", "hit_sq", "impac", "ukrai"}
+
 // ===============================
 // Structs
 // ===============================
@@ -155,6 +163,7 @@ type Page struct {
 	LastPick string
 	ErrorString string
 	HelperString string
+	Token string
 }
 
 type User struct {
@@ -181,6 +190,22 @@ type Team struct {
 	K []Player
 	DEF []Player
 }
+
+/* Sorting functions IF NEEDED for a slice of teams
+type TeamSlice []Team
+
+func (ts TeamSlice) Len() int {
+	return len(ts)
+}
+
+func (ts TeamSlice) Less(i, j int) bool{
+	return ts[i].Number < ts[j].Number
+}
+
+func (ts TeamSlice) Swap(i, j int) {
+	ts[i], ts[j] = ts[j], ts[i]
+}
+*/
 
 type Players struct {
 	QB map[string]Player
@@ -638,7 +663,7 @@ func GetPicksList() []Player {
 
 // Test page set up for conducting various tests
 func test(w http.ResponseWriter, r *http.Request) {
-	page := r.UserAgent()
+	page := "test page"
 	fmt.Fprint(w, page)
 }
 
@@ -656,9 +681,15 @@ func index(w http.ResponseWriter, r *http.Request) {
 		//http.Redirect(w, r, "/lobby", http.StatusFound)
 	}
 	// */
-	errT := TEMPLATES.ExecuteTemplate(w,"index.html",nil)
-	if errT != nil {
-		http.Error(w, errT.Error(), http.StatusInternalServerError)
+	// Detect mobile user
+	uaHeader := r.UserAgent()
+	if strings.Contains(uaHeader,"Mobile") {
+		err = TEMPLATES.ExecuteTemplate(w,"mindex.html",nil)
+	} else {
+		err = TEMPLATES.ExecuteTemplate(w,"index.html",nil)
+	}
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }
 
@@ -683,6 +714,15 @@ func login(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/keepers", http.StatusFound)
 	} else {
 		http.Redirect(w, r, "/lobby", http.StatusFound)
+	}
+}
+
+// Help Page
+// Display tips on using the site and what things mean
+func help(w http.ResponseWriter, r *http.Request) {
+	err := TEMPLATES.ExecuteTemplate(w,"help.html",nil)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }
 
@@ -769,6 +809,13 @@ func lobby(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Create the user's channel
+	c := appengine.NewContext(r)
+	token, err := channel.Create(c, cookie.Value)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+
 	// Rerecord what picks the user has made up to this point
 	var p [15]Player
 	for pi:=0;pi<NUMROUNDS;pi++ {
@@ -777,7 +824,7 @@ func lobby(w http.ResponseWriter, r *http.Request) {
 
 	// Prepare Page
 	// Create User using cookie username to lookup Name and Team
-	u := User{Name: teamName[cookie.Value], Team: teamTeam[cookie.Value], Picks: p, Number: teamNumber[cookie.Value]}
+	u := User{Name: teamName[cookie.Value], Username: cookie.Value, Team: teamTeam[cookie.Value], Picks: p, Number: teamNumber[cookie.Value]}
 	// Check if the draft is underway
 	pause := ""
 	if !PAUSE {
@@ -796,6 +843,7 @@ func lobby(w http.ResponseWriter, r *http.Request) {
 		CurrentPick: picker,
 		CurrentRound: CURROUND,
 		LastPick: LASTPICK,
+		Token: token,
 		HelperString: turnHeader}
 	// Detect mobile user
 	uaHeader := r.UserAgent()
@@ -810,6 +858,21 @@ func lobby(w http.ResponseWriter, r *http.Request) {
 
 	// Set cookie
 	http.SetCookie(w, cookie)
+}
+
+// post broadcasts a message
+func post(w http.ResponseWriter, r *http.Request) {
+	c := appengine.NewContext(r)
+	message := r.FormValue("msg")
+	token := r.FormValue("user")
+	message =  teamName[token] + " says: " + message
+
+	for _, client := range teamUsername {
+		err := channel.Send(c, client, message)
+		if err != nil {
+			c.Errorf("sending %q: %v", message, err)
+		}
+	}
 }
 
 // Handle Logout
@@ -1066,7 +1129,7 @@ func draft(w http.ResponseWriter, r *http.Request) {
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.0/jquery.min.js"></script>
 </html>`
 
-	fmt.Fprint(w, page)
+fmt.Fprint(w, page)
 }
 
 // The admin page 
@@ -1095,7 +1158,7 @@ func admin(w http.ResponseWriter, r *http.Request) {
 	page := Page{Pause: pause, Rosters: playersSlice()}
 	errT := TEMPLATES.ExecuteTemplate(w,"admin.html",page)
 	if errT != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, errT.Error(), http.StatusInternalServerError)
 	}
 
 	// Set cookie
@@ -1246,12 +1309,14 @@ func init() {
 
 	http.HandleFunc("/news", news)
 	http.HandleFunc("/research", research)
+	http.HandleFunc("/help", help)
 
 	http.HandleFunc("/keepers", keepers)
 	http.HandleFunc("/keepme", keepme)
 
 	http.HandleFunc("/lobby", lobby)
 	http.HandleFunc("/picked", picked)
+	http.HandleFunc("/post", post)
 
 	http.HandleFunc("/draft", draft)
 	http.HandleFunc("/timer", timer)

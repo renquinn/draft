@@ -5,6 +5,7 @@
 	<link rel="stylesheet" type="text/css" href="stylesheets/sortable.css" />
 	<link rel="stylesheet" type="text/css" href="stylesheets/tabs.css" />
 	<link rel="stylesheet" type="text/css" href="stylesheets/lobby.css" />
+	<link rel="stylesheet" type="text/css" href="stylesheets/chat.css" />
 </head>
 
 <body>
@@ -374,6 +375,8 @@
 		{{end}}
 	</div>
 
+
+
 	{{template "footer.html"}}
 	<script type="text/javascript" src="javascripts/jquery.ui.core.min.js"></script>
 	<script type="text/javascript" src="javascripts/jquery.ui.widget.min.js"></script>
@@ -389,6 +392,45 @@
 		});
 	</script>
 	{{end}}
+<div id="in"><span>Chat:</span><input type="text" size="100"></div>
+<div id="log"></div>
+<br /><br /><br /><br />
+<script src="/_ah/channel/jsapi"></script>
+<script>
+$(function() {
+	var token = '{{js .Token}}';
+	var chan = new goog.appengine.Channel(token);
+	var sock = chan.open();
+	sock.onmessage = function(msg) {
+		var d = new Date();
+		var hours = d.getHours()%12;
+		if (hours < 10) {
+			hours = "0" + hours;
+		}
+		var minutes = d.getMinutes();
+		if (minutes < 10) {
+			minutes = "0" + minutes;
+		}
+		var seconds = d.getSeconds();
+		if (seconds < 10) {
+			seconds = "0" + seconds;
+		}
+		$("#log").prepend($('<p />').text(hours + ":" + minutes + ":" + seconds + " " + msg.data));
+	};
+
+	var $in = $('#in input').focus();
+	$in.keypress(function(e) {
+		if (e.which != 13 && e.which != 10) {
+			return;
+		}
+		e.preventDefault();
+		var msg = $in.val();
+		$in.val('');
+		var user = '{{js .User.Username}}';
+		$.ajax('/post', {data: {token: token, msg: msg, user: user}});
+	});
+});
+</script>
 </body>
 
 </html>
