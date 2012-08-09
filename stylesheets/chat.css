@@ -1,6 +1,13 @@
+#in {
+}
+
 #in span {
-	background: #fff;
-	padding: 3px;
+	background: #000;
+	color: #fff;
+	padding: 10px;
+	font-size: 28px;
+	border-radius: 45px;
+	margin: 5px;
 }
 
 #log {
@@ -10,4 +17,5 @@
 	overflow-y: scroll;
 	padding: 0 15px;
 	border: 3px ridge #999;
+	border-radius: 15px;
 }
