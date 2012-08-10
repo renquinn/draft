@@ -1,10 +1,8 @@
 // TODO:
 //	BUG: Fix the chat room
 //			You will have to cache the convo and save it in the datastore
-//			Implement the quick chat
 //	Add a help page (with a faq) and an about page (with a goals section)
 //	Improve mobile site
-//	Prevent keepers from being selected multiple times
 //	BUG: Styling on team tabs overflows
 //	Fix cookies
 //	MAYBE: Only allow picks to be processed if draft has been started
@@ -75,6 +73,7 @@ var NUMROUNDS int
 var NUMTEAMS int
 var CLOCK time.Time
 var PAUSE bool
+var TOKEN string
 
 // Pick Management
 var PICKS[13][16]Player // The main draft data, each pick is stored here PICKS[NUMTEAMS+1][NUMROUNDS+1]
@@ -143,6 +142,20 @@ var teamTeam = map[string] string {
 	"hit_sq": "Hit Squad",
 	"impac": "Impact",
 	"ukrai": "Ukraine",
+}
+var teamKept = map[string] bool {
+	"dixie": false,
+	"b_ez_on": false,
+	"up_n_at": false,
+	"i_am_ba": false,
+	"rob_do": false,
+	"bhers": false,
+	"el_gor": false,
+	"nativ": false,
+	"p_town": false,
+	"hit_sq": false,
+	"impac": false,
+	"ukrai": false,
 }
 
 var teamUsername = []string {"dixie","b_ez_on", "up_n_at", "i_am_ba", "rob_do", "bhers", "el_gor", "nativ", "p_town", "hit_sq", "impac", "ukrai"}
@@ -720,7 +733,16 @@ func login(w http.ResponseWriter, r *http.Request) {
 // Help Page
 // Display tips on using the site and what things mean
 func help(w http.ResponseWriter, r *http.Request) {
-	err := TEMPLATES.ExecuteTemplate(w,"help.html",nil)
+	// Get Cookie
+	cookie, err := r.Cookie("username")
+	// If doesn't exist
+	if err != nil {
+		// Redirect to index
+		http.Redirect(w, r, "/", http.StatusForbidden)
+		return
+	}
+	page := Page { User: User{Username: cookie.Value}, Token: TOKEN}
+	err = TEMPLATES.ExecuteTemplate(w,"help.html",page)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
@@ -811,7 +833,7 @@ func lobby(w http.ResponseWriter, r *http.Request) {
 
 	// Create the user's channel
 	c := appengine.NewContext(r)
-	token, err := channel.Create(c, cookie.Value)
+	TOKEN, err = channel.Create(c, cookie.Value)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
@@ -843,7 +865,7 @@ func lobby(w http.ResponseWriter, r *http.Request) {
 		CurrentPick: picker,
 		CurrentRound: CURROUND,
 		LastPick: LASTPICK,
-		Token: token,
+		Token: TOKEN,
 		HelperString: turnHeader}
 	// Detect mobile user
 	uaHeader := r.UserAgent()
@@ -904,12 +926,17 @@ func keepers(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Check if keepers have been selected
+	if teamKept[cookie.Value] {
+		http.Redirect(w, r, "/lobby", http.StatusFound)
+	}
+
 	// Create User using cookie username to lookup Name and Team
 	u := User{Name: teamName[cookie.Value], Team: teamTeam[cookie.Value]}
 	//page := Page{User: u, Rosters: PLAYERS}
 	page := Page{User: u, Rosters: playersSlice()}
-	errT := TEMPLATES.ExecuteTemplate(w,"keepers.html",page)
-	if errT != nil {
+	err = TEMPLATES.ExecuteTemplate(w,"keepers.html",page)
+	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 	// Reset Cookie
@@ -951,6 +978,8 @@ func keepme(w http.ResponseWriter, r *http.Request) {
 			FindPlayer(k3, team, r3, Player{PlayerID: "0"}, "0")
 		}
 	}
+	// Define keepers as set
+	teamKept[cookie.Value] = true
 	/*
 	PICKS[team][r1] = k1
 	PICKS[team][r2] = k2
@@ -1155,7 +1184,7 @@ func admin(w http.ResponseWriter, r *http.Request) {
 		pause = "pause"
 	}
 	//page := Page{Pause: pause, Players: PLAYERS}
-	page := Page{Pause: pause, Rosters: playersSlice()}
+	page := Page{Pause: pause, User: User{Username: cookie.Value}, Token: TOKEN, Rosters: playersSlice()}
 	errT := TEMPLATES.ExecuteTemplate(w,"admin.html",page)
 	if errT != nil {
 		http.Error(w, errT.Error(), http.StatusInternalServerError)

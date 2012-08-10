@@ -42,6 +42,22 @@
 	</div>
 
 	{{template "footer.html"}}
+<script>
+$(function() {
+	var $in = $('.footer-chat input').focus();
+	$in.keypress(function(e) {
+		if (e.which != 13 && e.which != 10) {
+			return;
+		}
+		e.preventDefault();
+		var msg = $in.val();
+		$in.val('');
+		var token = '{{js .Token}}';
+		var user = '{{js .User.Username}}';
+		$.ajax('/post', {data: {token: token, msg: msg, user: user}});
+	});
+});
+</script>
 </body>
 
 </html>

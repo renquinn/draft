@@ -5,6 +5,7 @@ body{
 	font-family: "medium";
 	padding-top: 80px;
 	overflow-x: hidden;
+	overflow-y: scroll;
 	width: auto;
 	padding: 0;
 	margin: 0;
