@@ -1,15 +1,18 @@
 // TODO:
 //	BUG: Fix the chat room
 //			You will have to cache the convo and save it in the datastore
-//	Add a help page (with a faq) and an about page (with a goals section)
-//	Improve mobile site
+//	BUG: Mobile picking doesn't work
+//	BUG: Mobile scrolling doesn't work
+//			Check the meta tag in the html
+//	Save a draft and look at previous drafts
+//	Open ESPN news articles in a popup modal
+//
+// BACKLOG
+//	Add an about page (with a goals section)
 //	BUG: Styling on team tabs overflows
 //	Fix cookies
 //	MAYBE: Only allow picks to be processed if draft has been started
 //	MAYBE: Reset the draft info on draft start
-//
-// BACKLOG
-//	Save a draft and look at previous drafts
 //	Display more draft info on the lobby (ordered picks, player info as a popup modal)
 //	Use status codes to your advantage (ex. forbidden status on admin page)
 //	Move the draft board to a template
