@@ -391,7 +391,11 @@
 	</script>
 	{{end}}
 <div id="in"><span>Chat:</span><input type="text" size="100"></div>
-<div id="log"></div>
+<div id="log">
+	{{range $m := .Chat.Messages}}
+	<p>{{$m}}</p>
+	{{end}}
+</div>
 <br /><br /><br /><br />
 <script src="/_ah/channel/jsapi"></script>
 <script>
@@ -400,6 +404,17 @@ $(function() {
 	var chan = new goog.appengine.Channel(token);
 	var sock = chan.open();
 	sock.onmessage = function(msg) {
+				$("#log").prepend($('<p />').text(msg.data));
+	};
+
+	var $in = $('#in input').focus();
+	$in.keypress(function(e) {
+		if (e.which != 13 && e.which != 10) {
+			return;
+		}
+		e.preventDefault();
+
+		// CLOCK STUFF
 		var d = new Date();
 		var hours = d.getHours()%12;
 		if (hours < 10) {
@@ -413,19 +428,11 @@ $(function() {
 		if (seconds < 10) {
 			seconds = "0" + seconds;
 		}
-		$("#log").prepend($('<p />').text(hours + ":" + minutes + ":" + seconds + " " + msg.data));
-	};
-
-	var $in = $('#in input').focus();
-	$in.keypress(function(e) {
-		if (e.which != 13 && e.which != 10) {
-			return;
-		}
-		e.preventDefault();
+		var time = hours + ":" + minutes + ":" + seconds + " ";
 		var msg = $in.val();
 		$in.val('');
 		var user = '{{js .User.Username}}';
-		$.ajax('/post', {data: {token: token, msg: msg, user: user}});
+		$.ajax('/post', {data: {token: token, time: time, msg: msg, user: user}});
 	});
 });
 </script>
@@ -437,11 +444,28 @@ $(function() {
 			return;
 		}
 		e.preventDefault();
+
+		// CLOCK STUFF
+		var d = new Date();
+		var hours = d.getHours()%12;
+		if (hours < 10) {
+			hours = "0" + hours;
+		}
+		var minutes = d.getMinutes();
+		if (minutes < 10) {
+			minutes = "0" + minutes;
+		}
+		var seconds = d.getSeconds();
+		if (seconds < 10) {
+			seconds = "0" + seconds;
+		}
+		var time = hours + ":" + minutes + ":" + seconds + " ";
+
 		var msg = $in.val();
 		$in.val('');
 		var token = '{{js .Token}}';
 		var user = '{{js .User.Username}}';
-		$.ajax('/post', {data: {token: token, msg: msg, user: user}});
+		$.ajax('/post', {data: {token: token, time: time, msg: msg, user: user}});
 	});
 });
 </script>

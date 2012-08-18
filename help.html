@@ -50,11 +50,27 @@ $(function() {
 			return;
 		}
 		e.preventDefault();
+
+		// CLOCK STUFF
+		var d = new Date();
+		var hours = d.getHours()%12;
+		if (hours < 10) {
+			hours = "0" + hours;
+		}
+		var minutes = d.getMinutes();
+		if (minutes < 10) {
+			minutes = "0" + minutes;
+		}
+		var seconds = d.getSeconds();
+		if (seconds < 10) {
+			seconds = "0" + seconds;
+		}
+		var time = hours + ":" + minutes + ":" + seconds + " ";
 		var msg = $in.val();
 		$in.val('');
 		var token = '{{js .Token}}';
 		var user = '{{js .User.Username}}';
-		$.ajax('/post', {data: {token: token, msg: msg, user: user}});
+		$.ajax('/post', {data: {token: token, time: time, msg: msg, user: user}});
 	});
 });
 </script>

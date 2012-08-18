@@ -1,19 +1,18 @@
 // TODO:
 // 	BUG: Picking is broke
-//	BUG: Fix the chat room
-//			You will have to cache the convo and save it in the datastore
 //	DONE: Needs testing -- BUG: Mobile picking doesn't work
 //	DONE: Needs testing -- BUG: Mobile scrolling doesn't work (Check the meta tag in the html)
 //	BUG: when the lobby loads the scroll positioned is all the way down
 //	Save a draft and look at previous drafts
 //	Open ESPN news articles in a popup modal
+//	Change the name of the chatter in the chat room
 //
 // BACKLOG
-//	Add an about page (with a goals section)
-//	BUG: Styling on team tabs overflows
-//	Fix cookies
 //	MAYBE: Only allow picks to be processed if draft has been started
 //	MAYBE: Reset the draft info on draft start
+//	Add a goals to the about page
+//	BUG: Styling on team tabs wraps over
+//	Fix cookies
 //	Display more draft info on the lobby (ordered picks, player info as a popup modal)
 //	Use status codes to your advantage (ex. forbidden status on admin page)
 //	Move the draft board to a template
@@ -57,8 +56,10 @@ import (
 // Server Management
 // The list of templates to use
 var TEMPLATES = template.Must(template.ParseFiles(
+				"about.html",
 				"admin.html",
 				"chat.html",
+				"contact.html",
 				"footer.html",
 				"head.html",
 				"help.html",
@@ -76,9 +77,12 @@ var TEMPLATES = template.Must(template.ParseFiles(
 // Default draft info (for now)
 var NUMROUNDS int
 var NUMTEAMS int
+
+// Management
 var CLOCK time.Time
 var PAUSE bool
 var TOKEN string
+var CHAT Chat
 
 // Pick Management
 var PICKS[13][16]Player // The main draft data, each pick is stored here PICKS[NUMTEAMS+1][NUMROUNDS+1]
@@ -182,6 +186,17 @@ type Page struct {
 	ErrorString string
 	HelperString string
 	Token string
+	Chat Chat
+}
+
+type Chat struct {
+	ID int
+	Time time.Time
+	Messages []string
+}
+
+func (chat *Chat) Key(c appengine.Context) *datastore.Key {
+	return datastore.NewKey(c, "Chat", "", int64(chat.ID), nil)
 }
 
 type User struct {
@@ -406,6 +421,16 @@ func nextPick() {
 			CURPICK++
 		}
 	}
+}
+
+// Returns a Chat object with messages
+func getChat(c appengine.Context) (*Chat, error) {
+	chat := &Chat{ID: time.Now().Day(), Time: time.Now()}
+	err := datastore.Get(c, chat.Key(c), chat)
+	if err == datastore.ErrNoSuchEntity {
+		_, err = datastore.Put(c, chat.Key(c), chat)
+	}
+	return chat, err
 }
 
 // Returns a User struct from the datastore
@@ -753,6 +778,44 @@ func help(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// About Page
+// Display the purpose of the site
+func about(w http.ResponseWriter, r *http.Request) {
+	// Get Cookie
+	cookie, err := r.Cookie("username")
+	// If doesn't exist
+	if err != nil {
+		// Redirect to index
+		http.Redirect(w, r, "/", http.StatusForbidden)
+		return
+	}
+	page := Page { User: User{Username: cookie.Value}, Token: TOKEN}
+	err = TEMPLATES.ExecuteTemplate(w,"about.html",page)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+}
+
+
+// Contact Page
+// Display info on contacting me about the site
+func contact(w http.ResponseWriter, r *http.Request) {
+	// Get Cookie
+	cookie, err := r.Cookie("username")
+	// If doesn't exist
+	if err != nil {
+		// Redirect to index
+		http.Redirect(w, r, "/", http.StatusForbidden)
+		return
+	}
+	page := Page { User: User{Username: cookie.Value}, Token: TOKEN}
+	err = TEMPLATES.ExecuteTemplate(w,"contact.html",page)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+}
+
+
 // Research Page
 // Search for a player and if found, display that player's recent news
 // TODO: Display the player's stats/information
@@ -852,6 +915,12 @@ func lobby(w http.ResponseWriter, r *http.Request) {
 	// Prepare Page
 	// Create User using cookie username to lookup Name and Team
 	u := User{Name: teamName[cookie.Value], Username: cookie.Value, Team: teamTeam[cookie.Value], Picks: p, Number: teamNumber[cookie.Value]}
+	// Update the chatroom
+	CHAT, err := getChat(c)
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
 	// Check if the draft is underway
 	pause := ""
 	if !PAUSE {
@@ -871,6 +940,7 @@ func lobby(w http.ResponseWriter, r *http.Request) {
 		CurrentRound: CURROUND,
 		LastPick: LASTPICK,
 		Token: TOKEN,
+		Chat: *CHAT,
 		HelperString: turnHeader}
 	// Detect mobile user
 	uaHeader := r.UserAgent()
@@ -887,13 +957,37 @@ func lobby(w http.ResponseWriter, r *http.Request) {
 	http.SetCookie(w, cookie)
 }
 
+func reverse(s []string) ([]string) {
+	for i, j := 0, len(s)-1; i < j; i, j = i+1, j-1 {
+		s[i], s[j] = s[j], s[i]
+	}
+	return s
+}
+
 // post broadcasts a message
 func post(w http.ResponseWriter, r *http.Request) {
 	c := appengine.NewContext(r)
 	message := r.FormValue("msg")
 	token := r.FormValue("user")
-	message =  teamName[token] + " says: " + message
+	time := r.FormValue("time")
+	message =  time + " " + teamName[token] + " says: " + message
 
+	// Update the chatroom in the datastore
+	CHAT, err := getChat(c)
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
+	CHAT.Messages = reverse(CHAT.Messages)
+	CHAT.Messages = append(CHAT.Messages, message)
+	CHAT.Messages = reverse(CHAT.Messages)
+	_, err = datastore.Put(c, CHAT.Key(c), CHAT)
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
+
+	// Send the message to everyone
 	for _, client := range teamUsername {
 		err := channel.Send(c, client, message)
 		if err != nil {
@@ -1343,7 +1437,10 @@ func init() {
 
 	http.HandleFunc("/news", news)
 	http.HandleFunc("/research", research)
+
 	http.HandleFunc("/help", help)
+	http.HandleFunc("/about", about)
+	http.HandleFunc("/contact", contact)
 
 	http.HandleFunc("/keepers", keepers)
 	http.HandleFunc("/keepme", keepme)

@@ -1,23 +1,21 @@
+
 <html>
 
 <head>
-	{{template "head.html"}}
+	{{template "head.html" .Pause}}
+	<link rel="stylesheet" type="text/css" href="stylesheets/help.css" />
 </head>
 
 <body>
 	{{template "navbar.html"}}
 
-	<div class="box" id="makepick">
-		<center><span style="color:yellow;font-size:30px;">UNDER CONSTRUCTION</span></center>
-	</div>
+	<div class="container">
+		<h1>Contact</h1>
 
-	{{range $h := .Headlines}}
-	<div class="box" id="makepick">
-		<a href="http://espn.go.com"><img style="display:inline;float:right;" src="images/espn_gray.png" /></a>
-		<a href="{{$h.Links.Web.Href}}" style="text-decoration:none;color:#f5d70c;"><h2>{{$h.Headline}}</h2></a>
-		<p>{{$h.Description}}</p>
+		<p>For now, just call/facebook/tweet Ren</p>
+
+		<br />
 	</div>
-	{{end}}
 
 	{{template "footer.html"}}
 <script>
@@ -44,7 +42,6 @@ $(function() {
 			seconds = "0" + seconds;
 		}
 		var time = hours + ":" + minutes + ":" + seconds + " ";
-
 		var msg = $in.val();
 		$in.val('');
 		var token = '{{js .Token}}';
@@ -56,4 +53,3 @@ $(function() {
 </body>
 
 </html>
-
