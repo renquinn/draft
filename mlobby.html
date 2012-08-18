@@ -7,7 +7,7 @@
 	{{ if .Pause }}
 	<script type="text/javascript" src="javascripts/timer.js"></script>
 	{{ end }}
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="viewport" content="width=device-width, user-scalable=no">
 </head>
 
 <body>
@@ -36,6 +36,9 @@
 	<div class="box" id="makepick">
 			<br />
 		<form action="/picked" method="POST">
+			<input id="input-player" type="text" name="player" style="display: none;" />
+		</form>
+		<div class="mdraft">
 			<center>
 			<select name="qb">
 				<option value="nil">QB</option>
@@ -82,7 +85,7 @@
 			<br />
 			<input class="button" type="submit" value="Make Pick!">
 			</center>
-		</form>
+		</div>
 	</div>
 	<!--<script type="text/javascript" src="http://api.fantasyfootballnerd.com/ffnRankingsJS.php?apiKey=2012050338875903"></script>-->
 	<br />
@@ -183,6 +186,7 @@
 	<script type="text/javascript" src="javascripts/jquery-1.7.2.min.js"></script>
 	<script type="text/javascript" src="javascripts/mobile.js"></script>
 	<script type="text/javascript" src="javascripts/mtabs.js"></script>
+	<script type="text/javascript" src="javascripts/mdraft.js"></script>
 </body>
 
 </html>

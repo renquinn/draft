@@ -1,9 +1,10 @@
 // TODO:
+// 	BUG: Picking is broke
 //	BUG: Fix the chat room
 //			You will have to cache the convo and save it in the datastore
-//	BUG: Mobile picking doesn't work
-//	BUG: Mobile scrolling doesn't work
-//			Check the meta tag in the html
+//	DONE: Needs testing -- BUG: Mobile picking doesn't work
+//	DONE: Needs testing -- BUG: Mobile scrolling doesn't work (Check the meta tag in the html)
+//	BUG: when the lobby loads the scroll positioned is all the way down
 //	Save a draft and look at previous drafts
 //	Open ESPN news articles in a popup modal
 //
@@ -18,6 +19,7 @@
 //	Move the draft board to a template
 //
 // 2013
+//	Download team pictures and use them as a background for the player boxes
 //	Using ESPN's api, create a map[playername][playerid]
 //		and have a function lookup the playerid for everyplayer and add it to it
 //		Then when a user clicks on a player's name, it will open up a modal displaying the
