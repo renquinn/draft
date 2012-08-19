@@ -2,6 +2,7 @@
 
 <head>
 	{{template "head.html"}}
+	<link rel="stylesheet" type="text/css" href="stylesheets/dialog.css" />
 </head>
 
 <body>
@@ -11,15 +12,39 @@
 		<center><span style="color:yellow;font-size:30px;">UNDER CONSTRUCTION</span></center>
 	</div>
 
+
+	{{template "footer.html"}}
+	<script type="text/javascript" src="javascripts/jquery.ui.core.min.js"></script>
+	<script type="text/javascript" src="javascripts/jquery.ui.position.min.js"></script>
+	<script type="text/javascript" src="javascripts/jquery.ui.widget.min.js"></script>
+	<script type="text/javascript" src="javascripts/jquery.ui.dialog.min.js"></script>
 	{{range $h := .Headlines}}
 	<div class="box" id="makepick">
 		<a href="http://espn.go.com"><img style="display:inline;float:right;" src="images/espn_gray.png" /></a>
-		<a href="{{$h.Links.Web.Href}}" style="text-decoration:none;color:#f5d70c;"><h2>{{$h.Headline}}</h2></a>
+		<a href="#" id="opener-{{$h.Id}}" style="text-decoration:none;color:#f5d70c;"><h2>{{$h.Headline}}</h2></a>
 		<p>{{$h.Description}}</p>
 	</div>
-	{{end}}
+	<div style="display: none;" id="dialog-modal-{{$h.Id}}" title="ESPN">
+		<div class="story"><a href="{{$h.Links.Web.Href}}">CLICK HERE FOR STORY</a></div>
+		<p>One day I will have the story actually loaded in this little box so you won't have to go to espn.com for it</p>
+	</div>
+	<script>
+		$(function() {
+			$( "#dialog-modal-{{$h.Id}}" ).dialog({
+				autoOpen: false,
+				closeText: "x",
+				hide: "explode",
+				modal: true,
+				show: "blind",
+			});
 
-	{{template "footer.html"}}
+			$( "#opener-{{$h.Id}}" ).mousedown(function() {
+				$( "#dialog-modal-{{$h.Id}}" ).dialog( "open" );
+				return false;
+			});
+		});
+	</script>
+	{{end}}
 <script>
 $(function() {
 	var $in = $('.footer-chat input').focus();

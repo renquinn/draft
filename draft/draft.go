@@ -1,14 +1,14 @@
 // TODO:
-//	DONE: Needs testing -- BUG: Mobile scrolling doesn't work (Check the meta tag in the html)
 //	Save a draft and look at previous drafts
-//	Open ESPN news articles in a popup modal
-//	Change the name of the chatter in the chat room
+//	Change the color of the chatter in the chat room
 //
 // BACKLOG
 //	MAYBE: Only allow picks to be processed if draft has been started
 //	MAYBE: Reset the draft info on draft start
 //	Add a goals to the about page
 //	BUG: Styling on team tabs wraps over
+//	BUG: Mobile scrolling doesn't work (Check the meta tag in the html)
+//		- Turns out this is an Android bug in chrome, worry about it later
 //	Fix cookies
 //	Display more draft info on the lobby (ordered picks, player info as a popup modal)
 //	Use status codes to your advantage (ex. forbidden status on admin page)
@@ -311,6 +311,7 @@ type Headline struct {
 	Description string
 	Links Links
 	Categories []Category
+	Id int
 }
 
 type Links struct {
@@ -871,9 +872,10 @@ func news(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprintf(w, `<html>ERROR: %v <br /><a href="/admin">Back</a></html>`,err)
 			return
 		}
-	errT := TEMPLATES.ExecuteTemplate(w,"news.html",n)
-	if errT != nil {
-		http.Error(w, errT.Error(), http.StatusInternalServerError)
+
+	err = TEMPLATES.ExecuteTemplate(w,"news.html",n)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }
 

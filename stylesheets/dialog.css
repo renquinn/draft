@@ -1,0 +1,23 @@
+.ui-dialog {
+	background: #aaa;
+	padding: 10px;
+}
+
+.ui-dialog-titlebar {
+	background: #000;
+	margin: -10px -10px 10px -10px;
+	padding: 5px;
+}
+
+.ui-dialog-title {
+	color: #f00;
+}
+
+.ui-dialog-titlebar-close {
+	float: right;
+	text-decoration: none;
+}
+
+.ui-widget-overlay {
+	rgba(10,10,10.7);
+}
