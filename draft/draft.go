@@ -1,8 +1,5 @@
 // TODO:
-// 	BUG: Picking is broke
-//	DONE: Needs testing -- BUG: Mobile picking doesn't work
 //	DONE: Needs testing -- BUG: Mobile scrolling doesn't work (Check the meta tag in the html)
-//	BUG: when the lobby loads the scroll positioned is all the way down
 //	Save a draft and look at previous drafts
 //	Open ESPN news articles in a popup modal
 //	Change the name of the chatter in the chat room

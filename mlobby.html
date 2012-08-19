@@ -37,7 +37,6 @@
 			<br />
 		<form action="/picked" method="POST">
 			<input id="input-player" type="text" name="player" style="display: none;" />
-		</form>
 		<div class="mdraft">
 			<center>
 			<select name="qb">
@@ -85,6 +84,7 @@
 			<br />
 			<input class="button" type="submit" value="Make Pick!">
 			</center>
+		</form>
 		</div>
 	</div>
 	<!--<script type="text/javascript" src="http://api.fantasyfootballnerd.com/ffnRankingsJS.php?apiKey=2012050338875903"></script>-->
@@ -109,72 +109,60 @@
 							<th>
 							QBs
 							</th>
+							{{range $p := $t.QB}}
+							<td>{{$p.Name}} {{$p.Team}}</td>
+							{{end}}
 						</tr>
-					{{range $p := $t.QB}}
-						<tr>
-							<td>{{$p.Name}} {{$p.Team}}
-						</tr>
-					{{end}}
 					</table>
 					<table>
 						<tr>
 							<th>
 							RBs
 							</th>
+							{{range $p := $t.RB}}
+							<td>{{$p.Name}} {{$p.Team}}</td>
+							{{end}}
 						</tr>
-					{{range $p := $t.RB}}
-						<tr>
-							<td>{{$p.Name}} {{$p.Team}}
-						</tr>
-					{{end}}
 					</table>
 					<table>
 						<tr>
 							<th>
 							WRs
 							</th>
+							{{range $p := $t.WR}}
+							<td>{{$p.Name}} {{$p.Team}}</td>
+							{{end}}
 						</tr>
-					{{range $p := $t.WR}}
-						<tr>
-							<td>{{$p.Name}} {{$p.Team}}
-						</tr>
-					{{end}}
 					</table>
 					<table>
 						<tr>
 							<th>
 							TEs
 							</th>
+							{{range $p := $t.TE}}
+							<td>{{$p.Name}} {{$p.Team}}</td>
+							{{end}}
 						</tr>
-					{{range $p := $t.TE}}
-						<tr>
-							<td>{{$p.Name}} {{$p.Team}}
-						</tr>
-					{{end}}
 					</table>
 					<table>
 						<tr>
 							<th>
 							Ks
 							</th>
+							{{range $p := $t.K}}
+							<td>{{$p.Name}} {{$p.Team}}</td>
+							{{end}}
 						</tr>
-					{{range $p := $t.K}}
-						<tr>
-							<td>{{$p.Name}} {{$p.Team}}
-						</tr>
-					{{end}}
 					</table>
 					<table>
 						<tr>
 							<th>
 							DEFs
 							</th>
+							{{range $p := $t.DEF}}
+							<td>{{$p.Name}} {{$p.Team}}</td>
+							{{end}}
 						</tr>
-					{{range $p := $t.DEF}}
-						<tr>
-							<td>{{$p.Name}} {{$p.Team}}
-						</tr>
-					{{end}}
 					</table>
 		</div>
 		{{end}}
