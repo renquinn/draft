@@ -60,6 +60,7 @@ var TEMPLATES = template.Must(template.ParseFiles(
 				"footer.html",
 				"head.html",
 				"help.html",
+				"history.html",
 				"index.html",
 				"keepers.html",
 				"lobby.html",
@@ -184,6 +185,12 @@ type Page struct {
 	HelperString string
 	Token string
 	Chat Chat
+	History History
+}
+
+type History struct {
+	Teams []string
+	Rounds [][12]string
 }
 
 type Chat struct {
@@ -1296,6 +1303,7 @@ func admin(w http.ResponseWriter, r *http.Request) {
 func setadmin(w http.ResponseWriter, r *http.Request) {
 	// Get which function to perform
 	adminfunction := r.FormValue("admin")
+	c := appengine.NewContext(r)
 
 	if adminfunction == "reset" {
 		// Reset Clock
@@ -1383,7 +1391,6 @@ func setadmin(w http.ResponseWriter, r *http.Request) {
 		PAUSE = true
 	} else if adminfunction == "rosters" {
 		// Update Rosters
-		c := appengine.NewContext(r)
 		client := urlfetch.Client(c)
 		res, err := client.Get("http://api.fantasyfootballnerd.com/ffnPlayersXML.php?apiKey=2012050338875903")
 		//res, err := client.Get("http://squinn.php.cs.dixie.edu/players.xml") // For testing only
@@ -1409,9 +1416,80 @@ func setadmin(w http.ResponseWriter, r *http.Request) {
 		SyncRosters(r)
 	} else if adminfunction == "clear" {
 		ClearRosters(r)
+	} else if adminfunction == "save" {
+		year,_,_ := time.Now().Date()
+		yearstr := strconv.Itoa(year)
+		var teams []string
+		var round [12]string
+		var pick string
+
+		for i:=1;i<=NUMTEAMS;i++ {
+			teams = append(teams, teamTeam[rlookup(teamNumber,i)])
+		}
+		// Put the teams in the datastore
+		key := datastore.NewKey(c, "string", yearstr + "teams", 0, nil)
+		_, err := datastore.Put(c, key, teams)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+
+		for i:=1;i<=NUMROUNDS;i++ {
+			for j:=1;j<=NUMTEAMS;j++ {
+				pick += PICKS[j][i].Position // Each pick
+				pick += " "
+				pick += PICKS[j][i].Name // Each pick
+				pick += " "
+				pick += PICKS[j][i].Team // Each pick
+				round[j-1] = pick
+			}
+			roundnum := strconv.Itoa(i)
+			// Put the round in the datastore
+			key = datastore.NewKey(c, "string", yearstr + "round" + roundnum, 0, nil)
+			_, err = datastore.Put(c, key, round)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
+		}
+
 	}
 	// Redirect to draft board
 	http.Redirect(w, r, "/lobby", http.StatusFound)
+}
+
+func history(w http.ResponseWriter, r *http.Request) {
+	var teams []string
+	var round [12]string
+	var rounds [][12]string
+	year := r.FormValue("year")
+	c := appengine.NewContext(r)
+
+	key := datastore.NewKey(c, "string", year + "teams", 0, nil)
+	err := datastore.Get(c, key, teams)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+
+	for i:=1;i<=NUMROUNDS;i++ {
+		roundnum := strconv.Itoa(i)
+		key = datastore.NewKey(c, "string", year + "round" + roundnum, 0, nil)
+		err = datastore.Get(c, key, round)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+		rounds = append(rounds, round)
+	}
+
+	// Check if the draft is underway
+	pause := ""
+	if !PAUSE {
+		pause = "pause"
+	}
+	history := History{ Teams: teams, Rounds: rounds }
+	page := Page{Pause: pause, History: history}
+	err = TEMPLATES.ExecuteTemplate(w,"history.html", page)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }
 
 func init() {
@@ -1453,6 +1531,8 @@ func init() {
 
 	http.HandleFunc("/admin", admin)
 	http.HandleFunc("/setadmin", setadmin)
+
+	http.HandleFunc("/history", history)
 
 	http.HandleFunc("/logout", logout)
 	http.ListenAndServe(":8080", nil)

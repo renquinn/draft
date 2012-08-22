@@ -1,0 +1,32 @@
+<html>
+
+<head>
+	{{template "head.html" .Pause}}
+</head>
+
+<body>
+	{{template "navbar.html"}}
+
+	<table class="draft" table-layout="fixed">
+		<tr>
+			{{ range $team := .History.Teams }}
+			<th>
+				{{ $team }}
+			</th>
+			{{ end }}
+		</tr>
+			{{ range $round := .History.Rounds }}
+		<tr>
+				{{ range $pick := $round }}
+			<td>
+				{{ $pick }}
+			</td>
+				{{ end }}
+		</tr>
+			{{ end }}
+	</table>
+
+	{{template "footer.html"}}
+</body>
+
+</html>
