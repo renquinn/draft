@@ -1,9 +1,9 @@
 .info {
 	width: 75%;
-	margin: 0px auto 20px;
-	background: rgba(255,255,255,0.8);
-	border: 1px solid #000;
-	border-radius: 10px;
+	margin: 20px auto 40px;
+	background: rgba(255,255,255,0.7);
+	border: 2px solid #000;
+	border-radius: 35px;
 }
 
 .info > table {
@@ -12,5 +12,7 @@
 }
 
 .info th {
+	width: 33%;
 	padding: 5px;
+	font-size: 17px;
 }
