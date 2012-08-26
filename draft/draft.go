@@ -1,11 +1,12 @@
 // TODO:
 //	Save a draft and look at previous drafts
 //	Change the color of the chatter in the chat room
+//  Add a templates folder for all the templates
 //
 // BACKLOG
 //	MAYBE: Only allow picks to be processed if draft has been started
 //	MAYBE: Reset the draft info on draft start
-//	Add a goals to the about page
+//	Add goals to the about page
 //	BUG: Styling on team tabs wraps over
 //	BUG: Mobile scrolling doesn't work (Check the meta tag in the html)
 //		- Turns out this is an Android bug in chrome, worry about it later
@@ -1417,7 +1418,7 @@ func setadmin(w http.ResponseWriter, r *http.Request) {
 	} else if adminfunction == "clear" {
 		ClearRosters(r)
 	} else if adminfunction == "save" {
-		year,_,_ := time.Now().Date()
+		year, _, _ := time.Now().Date()
 		yearstr := strconv.Itoa(year)
 		var teams []string
 		var round [12]string
