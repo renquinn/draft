@@ -1,5 +1,7 @@
 // TODO:
-//	IMPORTANT: For draft day, don't forget to enable the redirect from the login screen to the lobby
+//	BUG: Everytime a user visits the lobby a new channel is created for the chat room, instead
+//		check if the token exists and if not store create the token and store it when created
+//		This might be fixed.  I'm still not sure if I want only 1 channel, or 12?
 //	MOBILE: Make the info text bigger on the lobby
 //	Save a draft and look at previous drafts
 //	Change the color of the chatter in the chat room
@@ -8,16 +10,15 @@
 // BACKLOG
 //	MAYBE: Only allow picks to be processed if draft has been started
 //	MAYBE: Reset the draft info on draft start
-//	Add goals to the about page
 //	BUG: Styling on team tabs wraps over
 //	BUG: Mobile scrolling doesn't work (Check the meta tag in the html)
 //		- Turns out this is an Android bug in chrome, worry about it later
 //  While on the chat room look into using a time.Location for time vs the current javascript solution
-//	Display more draft info on the lobby (ordered picks, player info as a popup modal)
-//	Use status codes to your advantage (ex. forbidden status on admin page)
-//	Move the draft board to a template
+//	Use status codes to your advantage (ex. forbidden status on admin page, custom 404, 500, etc. pages)
+//	MAYBE: Move the draft board to a template
 //
 // 2013
+//	Display more draft info on the lobby (ordered picks, player info as a popup modal)
 //	Download team pictures and use them as a background for the player boxes
 //	Using ESPN's api, create a map[playername][playerid]
 //		and have a function lookup the playerid for everyplayer and add it to it
@@ -910,9 +911,11 @@ func lobby(w http.ResponseWriter, r *http.Request) {
 
 	// Create the user's channel
 	c := appengine.NewContext(r)
-	TOKEN, err = channel.Create(c, cookie.Value)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+	if TOKEN == "" {
+		TOKEN, err = channel.Create(c, cookie.Value)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
 	}
 
 	// Rerecord what picks the user has made up to this point
