@@ -1,4 +1,6 @@
 // TODO:
+//	IMPORTANT: For draft day, don't forget to enable the redirect from the login screen to the lobby
+//	MOBILE: Make the info text bigger on the lobby
 //	Save a draft and look at previous drafts
 //	Change the color of the chatter in the chat room
 //  Add a templates folder for all the templates
@@ -10,7 +12,6 @@
 //	BUG: Styling on team tabs wraps over
 //	BUG: Mobile scrolling doesn't work (Check the meta tag in the html)
 //		- Turns out this is an Android bug in chrome, worry about it later
-//	Fix cookies
 //  While on the chat room look into using a time.Location for time vs the current javascript solution
 //	Display more draft info on the lobby (ordered picks, player info as a popup modal)
 //	Use status codes to your advantage (ex. forbidden status on admin page)
@@ -728,7 +729,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 	if err == nil {
 		//forward to lobby
 		http.SetCookie(w, cookie)
-		//http.Redirect(w, r, "/lobby", http.StatusFound)
+		http.Redirect(w, r, "/lobby", http.StatusFound)
 	}
 	// */
 	// Detect mobile user
@@ -1016,7 +1017,8 @@ func logout(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// Delete cookie
-	cookie.MaxAge = -1 //DOESN'T WORK????
+	cookie.MaxAge = -1
+	http.SetCookie(w, cookie)
 	// Redirect to login
 	http.Redirect(w, r, "/", http.StatusFound)
 }
