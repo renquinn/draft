@@ -11,6 +11,7 @@
 //	BUG: Mobile scrolling doesn't work (Check the meta tag in the html)
 //		- Turns out this is an Android bug in chrome, worry about it later
 //	Fix cookies
+//  While on the chat room look into using a time.Location for time vs the current javascript solution
 //	Display more draft info on the lobby (ordered picks, player info as a popup modal)
 //	Use status codes to your advantage (ex. forbidden status on admin page)
 //	Move the draft board to a template
@@ -350,7 +351,7 @@ type Athletes struct {
 }
 
 // ===============================
-// Helpers 
+// Helpers
 // ===============================
 
 func replace(players []Player, oldid string, player Player) []Player {
@@ -723,7 +724,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 	// /* COMMENT FOR TESTING
 	//Get Cookie
 	cookie, err := r.Cookie("username")
-	//If exists 
+	//If exists
 	if err == nil {
 		//forward to lobby
 		http.SetCookie(w, cookie)
@@ -860,7 +861,7 @@ func research(w http.ResponseWriter, r *http.Request) {
 }
 
 // News Page
-// Display the most recent NFL news 
+// Display the most recent NFL news
 func news(w http.ResponseWriter, r *http.Request) {
 	//developer.espn.com/docs
 		c := appengine.NewContext(r)
@@ -887,7 +888,7 @@ func news(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// The lobby 
+// The lobby
 // Where the user's main draft experience occurs.
 // Displays the user's picks as well as the entire league's recent picks
 // Displays each`team's picks
@@ -1267,7 +1268,7 @@ func draft(w http.ResponseWriter, r *http.Request) {
 fmt.Fprint(w, page)
 }
 
-// The admin page 
+// The admin page
 // Provides special settings including the ability to override picks and manage rosters
 func admin(w http.ResponseWriter, r *http.Request) {
 	// Get Cookie
