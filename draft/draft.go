@@ -1,8 +1,6 @@
 // TODO:
-//	BUG: Everytime a user visits the lobby a new channel is created for the chat room, instead
-//		check if the token exists and if not store create the token and store it when created
-//		This might be fixed.  I'm still not sure if I want only 1 channel, or 12?
 //	MOBILE: Make the info text bigger on the lobby
+//	BUG: Quick Chat doesn't work on news page, name doesn't load from research page
 //	Save a draft and look at previous drafts
 //	Change the color of the chatter in the chat room
 //  Add a templates folder for all the templates
@@ -83,7 +81,6 @@ var NUMTEAMS int
 // Management
 var CLOCK time.Time
 var PAUSE bool
-var TOKEN string
 var CHAT Chat
 
 // Pick Management
@@ -167,6 +164,20 @@ var teamKept = map[string] bool {
 	"hit_sq": false,
 	"impac": false,
 	"ukrai": false,
+}
+var TOKENS = map[string] string {
+	"dixie": "",
+	"b_ez_on": "",
+	"up_n_at": "",
+	"i_am_ba": "",
+	"rob_do": "",
+	"bhers": "",
+	"el_gor": "",
+	"nativ": "",
+	"p_town": "",
+	"hit_sq": "",
+	"impac": "",
+	"ukrai": "",
 }
 
 var teamUsername = []string {"dixie","b_ez_on", "up_n_at", "i_am_ba", "rob_do", "bhers", "el_gor", "nativ", "p_town", "hit_sq", "impac", "ukrai"}
@@ -780,7 +791,7 @@ func help(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/", http.StatusForbidden)
 		return
 	}
-	page := Page { User: User{Username: cookie.Value}, Token: TOKEN}
+	page := Page { User: User{Username: cookie.Value}, Token: TOKENS[cookie.Value]}
 	err = TEMPLATES.ExecuteTemplate(w,"help.html",page)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -798,7 +809,7 @@ func about(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/", http.StatusForbidden)
 		return
 	}
-	page := Page { User: User{Username: cookie.Value}, Token: TOKEN}
+	page := Page { User: User{Username: cookie.Value}, Token: TOKENS[cookie.Value]}
 	err = TEMPLATES.ExecuteTemplate(w,"about.html",page)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -817,7 +828,7 @@ func contact(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/", http.StatusForbidden)
 		return
 	}
-	page := Page { User: User{Username: cookie.Value}, Token: TOKEN}
+	page := Page { User: User{Username: cookie.Value}, Token: TOKENS[cookie.Value]}
 	err = TEMPLATES.ExecuteTemplate(w,"contact.html",page)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -911,8 +922,8 @@ func lobby(w http.ResponseWriter, r *http.Request) {
 
 	// Create the user's channel
 	c := appengine.NewContext(r)
-	if TOKEN == "" {
-		TOKEN, err = channel.Create(c, cookie.Value)
+	if TOKENS[cookie.Value] == "" {
+		TOKENS[cookie.Value], err = channel.Create(c, cookie.Value)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
@@ -951,7 +962,7 @@ func lobby(w http.ResponseWriter, r *http.Request) {
 		CurrentPick: picker,
 		CurrentRound: CURROUND,
 		LastPick: LASTPICK,
-		Token: TOKEN,
+		Token: TOKENS[cookie.Value],
 		Chat: *CHAT,
 		HelperString: turnHeader}
 	// Detect mobile user
@@ -1296,7 +1307,7 @@ func admin(w http.ResponseWriter, r *http.Request) {
 		pause = "pause"
 	}
 	//page := Page{Pause: pause, Players: PLAYERS}
-	page := Page{Pause: pause, User: User{Username: cookie.Value}, Token: TOKEN, Rosters: playersSlice()}
+	page := Page{Pause: pause, User: User{Username: cookie.Value}, Token: TOKENS[cookie.Value], Rosters: playersSlice()}
 	errT := TEMPLATES.ExecuteTemplate(w,"admin.html",page)
 	if errT != nil {
 		http.Error(w, errT.Error(), http.StatusInternalServerError)
